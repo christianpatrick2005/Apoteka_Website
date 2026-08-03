@@ -15,8 +15,8 @@
                     <a href="#" class="text-slate-600 hover:text-teal-600 font-medium transition-colors">Tentang Kami</a>
                 </div>
                 <div class="hidden md:flex items-center">
-                    <a href="#" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md shadow-teal-500/30 hover:shadow-lg hover:shadow-teal-500/40">
-                        Konsultasi Apoteker
+                    <a href="{{ route('login') }}" class="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md shadow-teal-500/30 hover:shadow-lg hover:shadow-teal-500/40">
+                        Login Pegawai
                     </a>
                 </div>
                 <!-- Mobile menu button -->

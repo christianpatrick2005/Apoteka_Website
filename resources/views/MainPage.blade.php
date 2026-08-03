@@ -30,7 +30,7 @@
                             <span class="block text-teal-600 xl:inline">Prioritas Kami</span>
                         </h1>
                         <p class="mt-3 text-base text-slate-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            Apoteka menyediakan berbagai obat-obatan asli, vitamin, dan produk kesehatan lainnya. Dapatkan konsultasi gratis dengan apoteker profesional kami.
+                            Apoteka menyediakan berbagai obat-obatan asli, alat kesehatan, vitamin, dan produk kesehatan lainnya. Dapatkan konsultasi gratis dengan apoteker profesional kami.
                         </p>
                         <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div class="rounded-full shadow-md shadow-teal-500/30">
@@ -59,7 +59,7 @@
             <div class="lg:text-center mb-12">
                 <h2 class="text-base text-teal-600 font-semibold tracking-wide uppercase">Layanan Unggulan</h2>
                 <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                    Cara Lebih Baik Merawat Diri
+                    Cara Lebih Baik Menjaga Kesehatan
                 </p>
                 <p class="mt-4 max-w-2xl text-xl text-slate-500 lg:mx-auto">
                     Kami memastikan Anda mendapatkan produk dan pelayanan terbaik untuk kesehatan Anda dan keluarga.
@@ -90,10 +90,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <p class="ml-16 text-lg leading-6 font-medium text-slate-900">Layanan 24 Jam</p>
+                            <p class="ml-16 text-lg leading-6 font-medium text-slate-900">Pelayanan Cepat</p>
                         </dt>
                         <dd class="mt-2 ml-16 text-base text-slate-500">
-                            Apotek kami siap melayani kebutuhan mendesak Anda kapan pun.
+                            Apotek kami siap melayani anda dengan cepat dan tanggap.
                         </dd>
                     </div>
 
@@ -104,10 +104,10 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                                 </svg>
                             </div>
-                            <p class="ml-16 text-lg leading-6 font-medium text-slate-900">Pengiriman Cepat</p>
+                            <p class="ml-16 text-lg leading-6 font-medium text-slate-900">Pengiriman Gratis</p>
                         </dt>
                         <dd class="mt-2 ml-16 text-base text-slate-500">
-                            Pesanan Anda akan segera diantar dengan aman dan cepat ke tujuan.
+                            Pesanan Anda akan segera diantar dengan aman dan tanpa biaya.
                         </dd>
                     </div>
 

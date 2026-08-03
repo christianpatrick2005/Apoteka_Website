@@ -17,6 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            
+            // Tambahkan 2 kolom baru di sini:
+            $table->enum('role', ['manajer', 'pegawai'])->default('pegawai');
+            $table->integer('jatah_cuti')->default(12);
+            
             $table->rememberToken();
             $table->timestamps();
         });
