@@ -12,15 +12,15 @@
         body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50 text-slate-800 antialiased selection:bg-teal-500 selection:text-white min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+<body class=" text-slate-800 antialiased bg-[#fde402]/30 selection:text-slate-900 min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
 
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 class="mt-6 text-center text-3xl font-extrabold text-slate-900">
             Masuk ke Akun Anda
         </h2>
-        <p class="mt-2 text-center text-sm text-slate-500">
+        <p class="mt-2 text-center text-sm ">
             Atau
-            <a href="{{ route('MainPage') }}" class="font-medium text-teal-600 hover:text-teal-500 transition-colors">
+            <a href="{{ route('MainPage') }}" class="font-medium text-[#284fa0] hover:text-[#eb2128] transition-colors">
                 kembali ke halaman utama
             </a>
         </p>
@@ -35,7 +35,7 @@
                         Username
                     </label>
                     <div class="mt-1">
-                        <input id="username" name="username" type="text" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm transition-colors">
+                        <input id="username" name="username" type="text" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#fde402] focus:border-[#fde402] sm:text-sm transition-colors">
                     </div>
                 </div>
 
@@ -44,12 +44,12 @@
                         Password
                     </label>
                     <div class="mt-1">
-                        <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm transition-colors">
+                        <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#fde402] focus:border-[#fde402] sm:text-sm transition-colors">
                     </div>
                 </div>
 
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all">
+                    <button type="submit" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-full shadow-sm text-sm font-medium text-slate-900 bg-[#fde402] hover:bg-[#284fa0] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#fde402] transition-all">
                         Masuk
                     </button>
                 </div>

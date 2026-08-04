@@ -8,10 +8,11 @@ class PengajuanIzinCuti extends Model
 {
     use HasFactory;
 
-    protected $table = 'pengajuan_cutis';
+    protected $table = 'pengajuan_izin_cutis';
 
     protected $fillable = [
         'user_id',
+        'user_pengganti_id',
         'kategori',
         'tanggal_pengajuan',
         'durasi',
@@ -38,5 +39,10 @@ class PengajuanIzinCuti extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function userPengganti(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_pengganti_id');
     }
 }

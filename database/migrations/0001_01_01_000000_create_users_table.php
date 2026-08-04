@@ -17,6 +17,18 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('alamat_surabaya');
+            $table->string('alamat_asal')->nullable();
+            $table->string('nomor_hp');
+            $table->string('tempat_lahir');
+            $table->date('tanggal_lahir');
+            $table->string('agama')->nullable();
+            $table->enum('status_pernikahan',['Belum Menikah','Menikah'])->default('Belum Menikah');
+            $table->string('jenis_kelamin')->nullable();
+            $table->string('posisi')->nullable();
+            $table->string('gaji')->nullable();
+            $table->integer('nomor_ktp');
+            $table->string('kewarganegaraan')->nullable();
             
             // Tambahkan 2 kolom baru di sini:
             $table->enum('role', ['manajer', 'pegawai'])->default('pegawai');
