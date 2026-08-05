@@ -13,6 +13,19 @@ return new class extends Migration
     {
         Schema::create('dokumen_pegawais', function (Blueprint $table) {
             $table->id();
+            // Relasi ke tabel users (karyawan/pegawai)
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            
+            // Kolom dokumen di-set nullable agar bisa diupload bertahap
+            $table->string('ijasah')->nullable();
+            $table->string('transkrip')->nullable();
+            $table->string('ktp')->nullable();
+            $table->string('str')->nullable();
+            $table->string('sertifikat_kompetensi')->nullable();
+            $table->string('sipa')->nullable();
+            
+            // Kolom tanggal kadaluarsa SIPA untuk keperluan reminder
+            $table->date('tanggal_kadaluarsa_sipa')->nullable();
             $table->timestamps();
         });
     }

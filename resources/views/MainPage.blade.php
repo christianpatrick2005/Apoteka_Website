@@ -173,9 +173,21 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">P3K</h3>
+                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">Alat Kesehatan</h3>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- insatgram section apoteka -->
+    <div class="py-6 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Media Sosial</h2>
+            <p class="mt-4 text-lg text-slate-500">Berikut adalah postingan terbaru dari Instagram kami</p>
+
+            <!-- Widget Elfsight -->
+            <div class="elfsight-app-91865fb5-c91b-483e-a5a5-34b15862ada7" data-elfsight-app-lazy></div>
+
         </div>
     </div>
 
@@ -184,3 +196,5 @@
 
 </body>
 </html>
+<!-- Script Elfsight -->
+<script src="https://elfsightcdn.com/platform.js" async></script>

@@ -16,6 +16,9 @@ return new class extends Migration
             // Relasi ke tabel users (siapa yang mengajukan cuti)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
 
+            // Pegawai yang akan menggantikan
+            $table->foreignId('user_pengganti_id')->nullable()->constrained('users')->onDelete('set null');
+
             $table->enum('kategori', ['izin', 'cuti'])->default('cuti');
             
             // Informasi dasar form
@@ -23,14 +26,14 @@ return new class extends Migration
             $table->string('durasi'); // Dalam format hari atau jam
             $table->text('keterangan');
             $table->text('alamat_tempat');
-            // Tipe cuti (Opsional - bisa ditambahkan jika diperlukan, misal: tahunan, sakit, khusus)
+            // jenis cuti (Opsional - bisa ditambahkan jika diperlukan, misal: tahunan, sakit, khusus)
             $table->string('jenis')->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
             
             // Berkas dan validasi (nullable untuk mengakomodasi cuti tahunan vs cuti khusus)
             $table->string('tanda_tangan')->nullable();
-            $table->string('berkas_pendukung')->nullable();
+            $table->json('berkas_pendukung')->nullable();
             
             // Status persetujuan oleh manajer
             $table->enum('status_pengajuan', ['pending', 'disetujui', 'ditolak'])->default('pending');

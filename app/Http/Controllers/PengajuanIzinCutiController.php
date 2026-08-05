@@ -28,7 +28,39 @@ class PengajuanIzinCutiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi berkas berkas
+        $request->validate([
+            // Validasi aturan 
+            'berkas_pendukung' => 'nullable|array', 
+            
+            // Validasi khusus untuk SETIAP file di dalam array tersebut (*)
+            'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,mp4|max:10240', // Maks 10MB per file
+        ]);
+
+        // array kosong untuk menampung nama-nama file
+        $pathBerkas = [];
+
+        // pengecekan apakah ada file yang diunggah
+        if ($request->hasFile('berkas_pendukung')) {
+            
+            // looping untuk setiap file yang diunggah
+            foreach ($request->file('berkas_pendukung') as $file) {
+                // Simpan file ke folder 'public/uploads/berkas' dan masukkan path-nya ke array
+                $pathBerkas[] = $file->store('uploads/berkas', 'public');
+            }
+        }
+
+        // Simpan ke database
+        PengajuanIzinCuti::create([
+            'user_id' => auth()->id(),
+            //....blm selesai
+            
+            // Masukkan array pathBerkas. 
+            // Berkat $casts di Model, Laravel akan otomatis mengubahnya menjadi JSON di MySQL.
+            'berkas_pendukung' => !empty($pathBerkas) ? $pathBerkas : null,
+        ]);
+
+        return redirect()->back()->with('success', 'Pengajuan berhasil dikirim!');
     }
 
     /**
