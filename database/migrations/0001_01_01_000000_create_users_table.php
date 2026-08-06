@@ -30,7 +30,6 @@ return new class extends Migration
             $table->integer('nomor_ktp');
             $table->string('kewarganegaraan')->nullable();
             
-            // Tambahkan 2 kolom baru di sini:
             $table->enum('role', ['manajer', 'pegawai'])->default('pegawai');
             $table->integer('jatah_cuti')->default(12);
             

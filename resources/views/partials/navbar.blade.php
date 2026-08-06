@@ -10,8 +10,20 @@
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Beranda</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Produk</a>
-                    <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Layanan</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Tentang Kami</a>
+
+                    <!-- verifikasi role -->
+                    @auth
+                        @if(auth()->user()->role === 'manajer')
+                            <a href="{{ route('ManagePegawai') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pegawai</a>
+                            <a href="{{ route('ManageDokumen') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Dokumen</a>
+                            <a href="{{ route('ManageShift') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Shift</a>
+                        @endif
+
+                        @if(auth()->user()->role === 'pegawai')
+                            <a href="{{ route('AjukanIzinCuti') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Ajukan Izin Cuti</a>
+                        @endif
+                    @endauth
                 </div>
                 <div class="hidden md:flex items-center">
                     <a href="{{ route('login') }}" class="bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md shadow-[#fde402]/50 hover:shadow-lg hover:shadow-[#284fa0]/40">

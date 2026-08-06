@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Models\JadwalPegawai;
+use Illuminate\Support\Facades\Storage;
 
 class JadwalPegawaiController extends Controller
 {
@@ -28,7 +31,28 @@ class JadwalPegawaiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+                // 1. Validasi input dari mobile
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'shift_id' => 'required|exists:shifts,id',
+            'tanggal_kerja' => 'nullable|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $jadwal = JadwalPegawai::create($request->only(['user_id','shift_id','tanggal_kerja']));
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'Data jadwal berhasil ditambahkan',
+            'data'   => $jadwal
+        ], 201);
     }
 
     /**
@@ -36,7 +60,20 @@ class JadwalPegawaiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $jadwal = JadwalPegawai::with(['user','shift'])->find($id);
+
+        if (!$jadwal) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Data jadwal tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'Detail dokumen berhasil dimuat',
+            'data'   => $jadwal
+        ], 200);
     }
 
     /**
@@ -44,7 +81,38 @@ class JadwalPegawaiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $jadwal = JadwalPegawai::find($id);
+
+        if (!$jadwal) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Data jadwal tidak ditemukan'
+            ], 404);
+        }
+
+        // Catatan: Di API Mobile, untuk upload file saat update, 
+        // pastikan aplikasi mobile mengirim dengan method POST dan parameter _method=PUT
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'sometimes|exists:users,id',
+            'shift_id' => 'sometimes|exists:shifts,id',
+            'tanggal_kerja' => 'nullable|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $jadwal->update($request->only(['user_id','shift_id','tanggal_kerja']));
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'Data jadwal berhasil diperbarui',
+            'data'   => $jadwal
+        ], 200);
     }
 
     /**
@@ -52,6 +120,29 @@ class JadwalPegawaiController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $jadwal = JadwalPegawai::find($id);
+
+        if (!$jadwal) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Data jadwal tidak ditemukan'
+            ], 404);
+        }
+
+        // Hapus SEMUA file fisik yang terkait dengan pegawai ini di folder storage
+        $fileFields = ['tanggal_kerja'];
+        foreach ($fileFields as $field) {
+            if ($jadwal->$field) {
+                Storage::disk('public')->delete($jadwal->$field);
+            }
+        }
+
+        // Hapus data dari MySQL
+        $jadwal->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'Data dan file jadwal pegawai berhasil dihapus secara permanen'
+        ], 200);
     }
 }
