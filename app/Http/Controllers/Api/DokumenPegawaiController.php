@@ -29,7 +29,7 @@ class DokumenPegawaiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+  public function store(Request $request)
     {
         // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
@@ -51,10 +51,10 @@ class DokumenPegawaiController extends Controller
         }
 
         // 2. Siapkan array data untuk disimpan
-        $data = ['user_id' => $request->user_id];
+        $data = ['user_id' => $request->user_id, 'tanggal_kadaluarsa_sipa' => $request->tanggal_kadaluarsa_sipa];
 
         // 3. Proses upload masing-masing file jika ada
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'tanggal_kadaluarsa_sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('uploads/dokumen', 'public');
@@ -68,7 +68,7 @@ class DokumenPegawaiController extends Controller
             'status' => 'success',
             'pesan'  => 'Dokumen pegawai berhasil ditambahkan',
             'data'   => $dokumen
-        ], 201);
+        ], 201);  
     }
 
     /**
@@ -127,10 +127,10 @@ class DokumenPegawaiController extends Controller
         }
 
         // Update data dasar
-        $data = $request->only(['user_id']);
+        $data = $request->only(['user_id','tanggal_kadaluarsa_sipa']);
 
         // Cek dan timpa file lama dengan file baru jika ada
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'tanggal_kadaluarsa_sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 // Hapus file fisik lama di folder storage agar tidak menumpuk
@@ -166,7 +166,7 @@ class DokumenPegawaiController extends Controller
         }
 
         // Hapus SEMUA file fisik yang terkait dengan pegawai ini di folder storage
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'tanggal_kadaluarsa_sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
         foreach ($fileFields as $field) {
             if ($dokumen->$field) {
                 Storage::disk('public')->delete($dokumen->$field);

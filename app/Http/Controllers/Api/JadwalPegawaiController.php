@@ -31,7 +31,7 @@ class JadwalPegawaiController extends Controller
      */
     public function store(Request $request)
     {
-                // 1. Validasi input dari mobile
+        // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'shift_id' => 'required|exists:shifts,id',
@@ -127,14 +127,6 @@ class JadwalPegawaiController extends Controller
                 'status' => 'error',
                 'pesan'  => 'Data jadwal tidak ditemukan'
             ], 404);
-        }
-
-        // Hapus SEMUA file fisik yang terkait dengan pegawai ini di folder storage
-        $fileFields = ['tanggal_kerja'];
-        foreach ($fileFields as $field) {
-            if ($jadwal->$field) {
-                Storage::disk('public')->delete($jadwal->$field);
-            }
         }
 
         // Hapus data dari MySQL
