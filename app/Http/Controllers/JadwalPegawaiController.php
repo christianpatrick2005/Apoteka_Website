@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
-class JadwalPegawaiController extends Controller
+class JadwalPegawaiController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class JadwalPegawaiController extends Controller
     public function index()
     {
         $data = JadwalPegawai::with(['user','shift'])->get();
-        return view('views.ManageShift', compact('data'));
+        return view('ManageShift', compact('data'));
     }
 
     /**
@@ -54,7 +54,7 @@ class JadwalPegawaiController extends Controller
     {
         $jadwalPegawai->load('user','shift');
 
-        return view('views.ManageShift', compact('jadwalPegawai'));
+        return view('ManageShift', compact('jadwalPegawai'));
     }
 
     /**

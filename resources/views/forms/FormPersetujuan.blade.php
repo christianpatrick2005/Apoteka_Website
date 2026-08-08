@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Dokumen - Apoteka</title>
+    <title>Form Persetujuan Izin Cuti - Apoteka</title>
     @vite('resources/css/app.css')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
         <div class="flex items-end justify-center">
             <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full">
                 <div class="bg-[#284fa0] px-6 py-4 flex justify-between items-center">
-                    <h3 class="text-lg leading-6 font-semibold text-white">Form Dokumen Pegawai</h3>
+                    <h3 class="text-lg leading-6 font-semibold text-white">Form Persetujuan Izin Cuti</h3>
                 </div>
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[70vh] overflow-y-auto">
                     <form id="form-dokumen" action="{{ route('dokumen.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">

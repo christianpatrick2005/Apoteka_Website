@@ -6,8 +6,9 @@ use App\Models\DokumenPegawai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
-class DokumenPegawaiController extends Controller
+class DokumenPegawaiController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +16,7 @@ class DokumenPegawaiController extends Controller
     public function index()
     {
         $data = DokumenPegawai::with(['user'])->get();
-        return view('views.ManageDokumen', compact('data'));
+        return view('ManageDokumen', compact('data'));
     }
 
     /**
@@ -23,7 +24,8 @@ class DokumenPegawaiController extends Controller
      */
     public function create()
     {
-        return view('forms.FormDokumen');
+        $users = User::all();
+        return view('forms.FormDokumen', compact('users'));
     }
 
     /**
@@ -72,7 +74,7 @@ class DokumenPegawaiController extends Controller
         $dokumenPegawai->load('user');
 
         // Panggil file Blade HTML dan bawa datanya
-        return view('views.ManageDokumen', compact('dokumenPegawai'));
+        return view('ManageDokumen', compact('dokumenPegawai'));
     }
 
     /**

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PengajuanIzinCuti extends Model
 {
-    use HasFactory;
+
 
     protected $table = 'pengajuan_izin_cutis';
 

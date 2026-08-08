@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class UserController extends Controller
+class UserController
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class UserController extends Controller
         $data = User::with(['dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti'])->get();
 
         // 2. Kembalikan respons ke file HTML/Blade (Ini yang BERBEDA)
-        return view('views.ManagePegawai', compact('data'));
+        return view('ManagePegawai', compact('data'));
     }
 
     /**
@@ -25,7 +25,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('form.FormPegawai');
+        return view('forms.FormPegawai');
     }
 
     /**
@@ -74,7 +74,7 @@ class UserController extends Controller
     {
         $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
 
-        return view('form.DetailPegawai', compact('user'));
+        return view('ManagePegawai', compact('user'));
     }
 
     /**
@@ -82,7 +82,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('form.FormPegawai', compact('user'));
+        return view('forms.FormPegawai', compact('user'));
     }
 
     /**

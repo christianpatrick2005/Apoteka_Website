@@ -6,7 +6,7 @@ use App\Models\Shift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ShiftController extends Controller
+class ShiftController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class ShiftController extends Controller
     {
         $data = Shift::with(['jadwalPegawai'])->get();
 
-        return view('views.ManageShift', compact('data'));
+        return view('ManageShift', compact('data'));
     }
 
     /**
@@ -23,7 +23,7 @@ class ShiftController extends Controller
      */
     public function create()
     {
-        return view('form.FormShift');
+        return view('forms.FormShift');
     }
 
     /**
@@ -52,7 +52,7 @@ class ShiftController extends Controller
     {
         $shift->load('jadwalPegawai');
 
-        return view('views.ManageShift', compact('shift'));
+        return view('ManageShift', compact('shift'));
     }
 
     /**
@@ -60,7 +60,7 @@ class ShiftController extends Controller
      */
     public function edit(Shift $shift)
     {
-        return view('form.FormShift', compact('shift'));
+        return view('forms.FormShift', compact('shift'));
     }
 
     /**

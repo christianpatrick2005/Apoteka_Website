@@ -24,26 +24,13 @@
                 <p class="mt-2 text-sm text-slate-500">Kelola informasi pegawai, dokumen, dan jadwal shift di sini.</p>
             </div>
 
-            <!-- Tabs Navigation -->
-            <div class="border-b border-gray-200 mb-8 bg-white rounded-t-xl px-6 pt-4 shadow-sm">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <a href="{{ route('ManagePegawai') }}" class="whitespace-nowrap py-4 px-1 text-base focus:outline-none border-b-4 border-transparent text-slate-500 font-medium hover:text-[#284fa0] hover:border-slate-300">
-                        Data Pegawai
-                    </a>
-                    <a href="{{ route('ManageDokumen') }}" class="whitespace-nowrap py-4 px-1 text-base focus:outline-none border-b-4 border-transparent text-slate-500 font-medium hover:text-[#284fa0] hover:border-slate-300">
-                        Dokumen Pegawai
-                    </a>
-                    <a href="{{ route('ManageShift') }}" class="whitespace-nowrap py-4 px-1 text-base focus:outline-none border-b-4 border-[#284fa0] text-[#284fa0] font-semibold">
-                        Jadwal Shift
-                    </a>
-                </nav>
-            </div>
+            @include('partials.navigation')
 
             <!-- CONTENT: SHIFT -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
                     <h3 class="text-lg leading-6 font-semibold text-slate-900">Daftar Shift</h3>
-                    <a href="{{ route('FormShift') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-[#284fa0] hover:bg-[#1e3b7a] shadow-sm transition-colors">
+                    <a href="{{ route('shift.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-[#284fa0] hover:bg-[#1e3b7a] shadow-sm transition-colors">
                         <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                         </svg>

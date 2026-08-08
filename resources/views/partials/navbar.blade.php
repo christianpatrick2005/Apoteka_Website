@@ -12,12 +12,15 @@
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Produk</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Tentang Kami</a>
 
+                    <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Data</a>
+                    <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Pengajuan Izin/Cuti</a>
                     <!-- verifikasi role -->
                     @auth
                         @if(auth()->user()->role === 'manajer')
-                            <a href="{{ route('ManagePegawai') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pegawai</a>
-                            <a href="{{ route('ManageDokumen') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Dokumen</a>
-                            <a href="{{ route('ManageShift') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Shift</a>
+                            <!-- <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pegawai</a>
+                            <a href="{{ route('dokumen.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Dokumen</a>
+                            <a href="{{ route('shift.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Shift</a>
+                            <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pengajuan Izin Cuti</a> -->
                         @endif
 
                         @if(auth()->user()->role === 'pegawai')

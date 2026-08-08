@@ -6,8 +6,9 @@ use App\Models\PengajuanIzinCuti;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
-class PengajuanIzinCutiController extends Controller
+class PengajuanIzinCutiController 
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +17,7 @@ class PengajuanIzinCutiController extends Controller
     {
         $data = PengajuanIzinCuti::with(['user', 'userPengganti'])->get();
 
-        return view('form.ManageIzinCuti', compact('data'));
+        return view('ManageIzinCuti', compact('data'));
     }
 
     /**
@@ -24,7 +25,8 @@ class PengajuanIzinCutiController extends Controller
      */
     public function create()
     {
-        return view('form.FormIzinCuti');
+        $users = User::all();
+        return view('forms.FormIzinCuti', compact('users'));
     }
 
     /**
@@ -92,7 +94,7 @@ class PengajuanIzinCutiController extends Controller
     public function show(PengajuanIzinCuti $pengajuanIzinCuti)
     {
         $pengajuanIzinCuti->load('user','userPengganti');
-        return view('form.ManageIzinCuti', compact('pengajuanIzinCuti'));
+        return view('ManageIzinCuti', compact('pengajuanIzinCuti'));
     }
 
     /**
@@ -100,7 +102,7 @@ class PengajuanIzinCutiController extends Controller
      */
     public function edit(PengajuanIzinCuti $pengajuanIzinCuti)
     {
-        return view('form.FormIzinCuti', compact('pengajuanIzinCuti'));
+        return view('forms.FormIzinCuti', compact('pengajuanIzinCuti'));
     }
 
     /**

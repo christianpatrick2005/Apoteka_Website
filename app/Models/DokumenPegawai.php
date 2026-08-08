@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DokumenPegawai extends Model
 {
-    use HasFactory;
 
     protected $table = 'dokumen_pegawais';
 
