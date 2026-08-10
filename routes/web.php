@@ -6,14 +6,18 @@ use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\JadwalPegawaiController;
 use App\Http\Controllers\DokumenPegawaiController;
 use App\Http\Controllers\PengajuanIzinCutiController;
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
     return view('MainPage');
 })->name('MainPage');
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'authenticate']);
+});
+
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 //route untuk function kustom dalam controller
 Route::put('/pengajuan-izin/{pengajuan}/persetujuan', [PengajuanIzinCutiController::class, 'persetujuan'])->name('pengajuan-izin.persetujuan');

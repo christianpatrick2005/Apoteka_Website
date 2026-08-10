@@ -31,7 +31,8 @@ return new class extends Migration
             $table->string('kewarganegaraan')->nullable();
             
             $table->enum('role', ['manajer', 'pegawai'])->default('pegawai');
-            $table->integer('jatah_cuti')->default(12);
+            $table->integer('jatah_cuti_tahunan')->default(6);
+            $table->integer('jatah_cuti_kehamilan')->default(90);
             
             $table->rememberToken();
             $table->timestamps();

@@ -65,8 +65,8 @@
                                 <input type="text" name="gaji" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Jatah Cuti</label>
-                                <input type="number" name="jatah_cuti" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <label class="block text-sm font-medium text-gray-700">Jatah Cuti Tahunan</label>
+                                <input type="number" name="jatah_cuti_tahunan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                         </div>
                         
@@ -109,6 +109,10 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Alamat Surabaya</label>
                                 <textarea name="alamat_surabaya" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Jatah Cuti Kehamilan</label>
+                                <input type="number" name="jatah_cuti_kehamilan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                         </div>
                     </form>

@@ -27,12 +27,11 @@ return new class extends Migration
             $table->text('keterangan');
             $table->text('alamat_tempat');
             // jenis cuti (Opsional - bisa ditambahkan jika diperlukan, misal: tahunan, sakit, khusus)
-            $table->string('jenis')->nullable();
+            $table->enum('jenis_cuti', ['cuti_tahunan', 'cuti_kehamilan','lainnya'])->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
             
             // Berkas dan validasi (nullable untuk mengakomodasi cuti tahunan vs cuti khusus)
-            $table->string('tanda_tangan')->nullable();
             $table->json('berkas_pendukung')->nullable();
             
             // Status persetujuan oleh manajer

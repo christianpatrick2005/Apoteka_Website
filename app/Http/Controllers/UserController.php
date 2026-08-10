@@ -51,7 +51,8 @@ class UserController
             'nomor_ktp' => 'required|string|max:255',
             'kewarganegaraan' => 'required|string|max:255',
             'role' => 'required|in:manager,pegawai',
-            'jatah_cuti' => 'required|integer',
+            'jatah_cuti_tahunan' => 'required|integer',
+            'jatah_cuti_kehamilan' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -74,7 +75,7 @@ class UserController
     {
         $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
 
-        return view('ManagePegawai', compact('user'));
+        return view('details.pegawai', compact('user'));
     }
 
     /**
@@ -108,7 +109,8 @@ class UserController
             'nomor_ktp' => 'required|string|max:255',
             'kewarganegaraan' => 'required|string|max:255',
             'role' => 'required|in:manager,pegawai',
-            'jatah_cuti' => 'required|integer',
+            'jatah_cuti_tahunan' => 'required|integer',
+            'jatah_cuti_kehamilan' => 'required|integer',
         ]);
 
         if ($validator->fails()) {

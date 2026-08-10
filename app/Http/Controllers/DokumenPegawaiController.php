@@ -74,7 +74,7 @@ class DokumenPegawaiController
         $dokumenPegawai->load('user');
 
         // Panggil file Blade HTML dan bawa datanya
-        return view('ManageDokumen', compact('dokumenPegawai'));
+        return view('details.dokumen', compact('dokumenPegawai'));
     }
 
     /**

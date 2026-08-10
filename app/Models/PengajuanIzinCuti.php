@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PengajuanIzinCuti extends Model
 {
@@ -18,10 +19,9 @@ class PengajuanIzinCuti extends Model
         'durasi',
         'keterangan',
         'alamat_tempat',
-        'jenis',
+        'jenis_cuti',
         'tanggal_mulai',
         'tanggal_selesai',
-        'tanda_tangan',
         'berkas_pendukung',
         'status_pengajuan',
         'tanggal_persetujuan',

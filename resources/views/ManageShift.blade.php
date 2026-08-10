@@ -48,24 +48,28 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($data as $shift)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Shift Pagi</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">07:00:00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15:00:00</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$shift->nama_shift}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$shift->jam_masuk}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$shift->jam_keluar}}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Edit</button>
-                                    <button class="text-[#eb2128] hover:text-red-900">Hapus</button>
+                                    <a href="{{ route('shift.show', $shift->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Detail</a>
+                                    <!-- Tombol Edit (Menggunakan tag <a> ke route edit) -->
+                                    <a href="{{ route('shift.edit', $shift->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Edit</a>
+                                    
+                                    <!-- Tombol Hapus (Wajib menggunakan tag <form> dengan metode DELETE) -->
+                                    <form action="{{ route('shift.destroy', $shift->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-[#eb2128] hover:text-red-900">Hapus</button>
+                                    </form>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Shift Siang</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14:00:00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">22:00:00</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Edit</button>
-                                    <button class="text-[#eb2128] hover:text-red-900">Hapus</button>
-                                </td>
-                            </tr>
+                            @empty
+                                <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">Belum ada data shift</td>
+                            @endforelse
+
                         </tbody>
                     </table>
                 </div>

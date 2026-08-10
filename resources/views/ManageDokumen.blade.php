@@ -49,23 +49,55 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <!-- Placeholder data for UI -->
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">Ahmad Jaelani</div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                        Uploaded
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    12 Okt 2027
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Detail/Edit</button>
-                                    <button class="text-[#eb2128] hover:text-red-900">Hapus</button>
-                                </td>
-                            </tr>
+                            @forelse($data as $item)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <!-- Mengambil nama dari tabel users lewat relasi -->
+                                        <div class="text-sm font-medium text-gray-900">{{ $item->user->name ?? 'Pegawai Tidak Ditemukan' }}</div>
+                                    </td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <!-- Cek apakah kolom sipa ada isinya (tidak null) -->
+                                        @if($item->sipa)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Uploaded
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                Belum Upload
+                                            </span>
+                                        @endif
+                                    </td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <!-- Format tanggal menjadi misal: 12 Oct 2027 -->
+                                        {{ $item->tanggal_kadaluarsa_sipa ? \Carbon\Carbon::parse($item->tanggal_kadaluarsa_sipa)->format('d M Y') : '-' }}
+                                    </td>
+                                    
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <a href="{{ route('dokumen.show', $item->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Detail</a>    
+
+                                        <!-- Tombol Edit (Menggunakan tag <a> ke route edit) -->
+                                        <a href="{{ route('dokumen.edit', $item->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Edit</a>
+                                        
+                                        <!-- Tombol Hapus (Wajib menggunakan tag <form> dengan metode DELETE) -->
+                                        <form action="{{ route('dokumen.destroy', $item->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-[#eb2128] hover:text-red-900">Hapus</button>
+                                        </form>
+
+                                    </td>
+                                </tr>
+                                
+                                <!-- Jika tabel dokumen di MySQL masih kosong -->
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="px-6 py-10 text-center text-gray-500 text-sm">
+                                        Belum ada data dokumen pegawai.
+                                    </td>
+                                </tr>
+                                @endforelse
                         </tbody>
                     </table>
                 </div>

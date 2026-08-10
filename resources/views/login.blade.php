@@ -28,15 +28,18 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow-sm border border-slate-100 sm:rounded-2xl sm:px-10">
-            <form class="space-y-6" action="/login" method="POST">
+            <form class="space-y-6" action="{{ route('login') }}" method="POST">
                 @csrf
                 <div>
-                    <label for="username" class="block text-sm font-medium text-slate-700">
-                        Username
+                    <label for="email" class="block text-sm font-medium text-slate-700">
+                        Email
                     </label>
                     <div class="mt-1">
-                        <input id="username" name="username" type="text" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#fde402] focus:border-[#fde402] sm:text-sm transition-colors">
+                        <input id="email" name="email" type="email" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#fde402] focus:border-[#fde402] sm:text-sm transition-colors">
                     </div>
+                    @error('email')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
@@ -46,6 +49,9 @@
                     <div class="mt-1">
                         <input id="password" name="password" type="password" required class="appearance-none block w-full px-3 py-2 border border-slate-300 rounded-xl shadow-sm placeholder-slate-400 focus:outline-none focus:ring-[#fde402] focus:border-[#fde402] sm:text-sm transition-colors">
                     </div>
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>

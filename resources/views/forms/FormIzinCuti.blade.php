@@ -89,7 +89,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Jenis</label>
-                                <input type="text" name="jenis" value="{{ old('jenis', $pengajuanIzinCuti->jenis ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm" placeholder="Contoh: Cuti Tahunan / Izin Sakit">
+
                             </div>
                         </div>
 
@@ -124,13 +124,13 @@
                             <textarea name="alamat_tempat" required rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">{{ old('alamat_tempat', $pengajuanIzinCuti->alamat_tempat ?? '') }}</textarea>
                         </div>
 
-                        <div>
+                        <!-- <div>
                             <label class="block text-sm font-medium text-gray-700">Tanda Tangan (Gambar: jpeg/png/jpg)</label>
                             <input type="file" name="tanda_tangan" accept=".jpeg,.png,.jpg,image/jpeg,image/png" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
                             @if(isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanda_tangan)
                                 <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $pengajuanIzinCuti->tanda_tangan) }}" target="_blank" class="text-blue-500 underline">Lihat Tanda Tangan</a></p>
                             @endif
-                        </div>
+                        </div> -->
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Berkas Pendukung (Bisa lebih dari 1 file, format: pdf, jpeg, mp4, dsb)</label>

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,7 +36,8 @@ class User extends Authenticatable
         'nomor_ktp',
         'kewarganegaraan',
         'role',
-        'jatah_cuti',
+        'jatah_cuti_tahunan',
+        'jatah_cuti_kehamilan',
     ];
 
     /**

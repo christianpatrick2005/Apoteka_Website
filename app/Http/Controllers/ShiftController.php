@@ -52,7 +52,7 @@ class ShiftController
     {
         $shift->load('jadwalPegawai');
 
-        return view('ManageShift', compact('shift'));
+        return view('details.shift', compact('shift'));
     }
 
     /**

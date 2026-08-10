@@ -43,10 +43,9 @@ class PengajuanIzinCutiController
             'durasi' => 'required|string',
             'keterangan' => 'required|string',
             'alamat_tempat' => 'required|string',
-            'jenis' => 'nullable|string',
+            'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date',
-            'tanda_tangan' => 'nullable|file|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar
             'berkas_pendukung' => 'nullable|array', // Harus array
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240', // Validasi isi array
         ]);
@@ -57,13 +56,8 @@ class PengajuanIzinCutiController
 
         // 2. Siapkan data teks (kecuali file)
         $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
-            'durasi', 'keterangan', 'alamat_tempat', 'jenis', 
+            'durasi', 'keterangan', 'alamat_tempat', 'jenis_cuti', 
             'tanggal_mulai', 'tanggal_selesai']);
-
-        // 3. Proses Upload Tanda Tangan (Satu File)
-        if ($request->hasFile('tanda_tangan')) {
-            $data['tanda_tangan'] = $request->file('tanda_tangan')->store('uploads/ttd', 'public');
-        }
 
         // array kosong untuk menampung nama-nama file
         $pathBerkas = [];
@@ -94,7 +88,7 @@ class PengajuanIzinCutiController
     public function show(PengajuanIzinCuti $pengajuanIzinCuti)
     {
         $pengajuanIzinCuti->load('user','userPengganti');
-        return view('ManageIzinCuti', compact('pengajuanIzinCuti'));
+        return view('details.cuti', compact('pengajuanIzinCuti'));
     }
 
     /**
@@ -118,10 +112,9 @@ class PengajuanIzinCutiController
             'durasi' => 'required|string',
             'keterangan' => 'required|string',
             'alamat_tempat' => 'required|string',
-            'jenis' => 'nullable|string',
+            'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
             'tanggal_mulai' => 'nullable|date',
             'tanggal_selesai' => 'nullable|date',
-            'tanda_tangan' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'berkas_pendukung' => 'nullable|array',
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240',
         ]);
@@ -131,19 +124,12 @@ class PengajuanIzinCutiController
         }
 
         $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
-            'durasi', 'keterangan', 'alamat_tempat', 'jenis', 
+            'durasi', 'keterangan', 'alamat_tempat', 'jenis_cuti', 
             'tanggal_mulai', 'tanggal_selesai']);
 
         // Jika pegawai mengedit pengajuannya, kembalikan statusnya jadi 'pending' 
         // agar manajer tahu ada perubahan dan harus me-review ulang.
         $data['status_pengajuan'] = 'pending';
-        
-        if ($request->hasFile('tanda_tangan')) {
-            if ($pengajuanIzinCuti->tanda_tangan) {
-                Storage::disk('public')->delete($pengajuanIzinCuti->tanda_tangan);
-            }
-            $data['tanda_tangan'] = $request->file('tanda_tangan')->store('uploads/ttd', 'public');
-        }
 
         // Update Berkas Pendukung (Timpa dengan file baru)
         if ($request->hasFile('berkas_pendukung')) {
