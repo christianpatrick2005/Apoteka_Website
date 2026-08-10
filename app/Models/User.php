@@ -64,7 +64,7 @@ class User extends Authenticatable
      */
     public function pengajuanCuti()
     {
-        return $this->hasMany(PengajuanCuti::class, 'user_id');
+        return $this->hasMany(PengajuanIzinCuti::class, 'user_id');
     }
 
     /**
