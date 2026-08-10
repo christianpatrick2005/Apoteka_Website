@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\PengajuanIzinCuti;
 use Illuminate\Support\Facades\Storage;
 
-class PengajuanIzinCutiController extends Controller
+class PengajuanIzinCutiController
 {
     /**
      * Display a listing of the resource.
