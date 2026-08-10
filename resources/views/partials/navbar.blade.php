@@ -8,7 +8,7 @@
                     </a>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Beranda</a>
+                    <a href="{{ route('MainPage') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Beranda</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Produk</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Tentang Kami</a>
 
@@ -35,7 +35,7 @@
                 </div>
                 <!-- Mobile menu button -->
                 <div class="flex items-center md:hidden">
-                    <button class="text-slate-600 hover:text-[#284fa0] focus:outline-none">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-[#284fa0] focus:outline-none">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
@@ -43,4 +43,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu-dropdown" class="md:hidden border-t border-gray-100 hidden">
+            <div class="px-4 pt-2 pb-4 space-y-2 bg-white">
+                <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Beranda</a>
+                <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Produk</a>
+                <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Tentang Kami</a>
+                <a href="{{ route('pegawai.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Manage Data</a>
+                <a href="{{ route('pengajuan-izin.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Pengajuan Izin/Cuti</a>
+                
+                @auth
+                    @if(auth()->user()->role === 'pegawai')
+                        <a href="{{ route('AjukanIzinCuti') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Ajukan Izin Cuti</a>
+                    @endif
+                @endauth
+                
+                <a href="{{ route('login') }}" class="block w-full mt-4 px-3 py-2 bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white rounded-md font-medium transition-colors text-center">
+                    Login Pegawai
+                </a>
+            </div>
+        </div>
     </nav>
+
+    <!-- Mobile Menu Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu-dropdown');
+            
+            if (btn && menu) {
+                btn.addEventListener('click', function () {
+                    menu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
