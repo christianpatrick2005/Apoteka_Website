@@ -1,3 +1,12 @@
+@php
+    $notifikasiPengganti = [];
+    if(auth()->check()) {
+        $notifikasiPengganti = \App\Models\PengajuanIzinCuti::where('user_pengganti_id', auth()->id())
+            ->where('status_pengganti', 'pending')
+            ->with('user')
+            ->get();
+    }
+@endphp
     <!-- Navigation -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,15 +21,11 @@
                     <a href="https://shopee.co.id/apoteka_bm#product_list" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Produk</a>
                     <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Tentang Kami</a>
 
-                    <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Data</a>
-                    <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Pengajuan Izin/Cuti</a>
                     <!-- verifikasi role -->
                     @auth
                         @if(auth()->user()->role === 'manajer')
-                            <!-- <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pegawai</a>
-                            <a href="{{ route('dokumen.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Dokumen</a>
-                            <a href="{{ route('shift.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Shift</a>
-                            <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Pengajuan Izin Cuti</a> -->
+                            <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Data</a>
+                            <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Pengajuan Izin/Cuti</a>
                         @endif
 
                         @if(auth()->user()->role === 'pegawai')
@@ -28,10 +33,67 @@
                         @endif
                     @endauth
                 </div>
-                <div class="hidden md:flex items-center">
-                    <a href="{{ route('login') }}" class="bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md shadow-[#fde402]/50 hover:shadow-lg hover:shadow-[#284fa0]/40">
-                        Login Pegawai
-                    </a>
+                <div class="hidden md:flex items-center space-x-4">
+                    @auth
+                        <div class="flex items-center space-x-4">
+                            
+                            <!-- Notification Dropdown -->
+                            <div class="relative group">
+                                <button class="relative p-2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                    @if(count($notifikasiPengganti) > 0)
+                                        <span class="absolute top-1 right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ count($notifikasiPengganti) }}</span>
+                                    @endif
+                                </button>
+                                
+                                <!-- Dropdown Menu -->
+                                <div class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block border border-gray-100">
+                                    <div class="px-4 py-2 border-b border-gray-100 font-semibold text-sm text-gray-700">Notifikasi</div>
+                                    @if(count($notifikasiPengganti) > 0)
+                                        <div class="max-h-64 overflow-y-auto">
+                                            @foreach($notifikasiPengganti as $notif)
+                                                <div class="px-4 py-3 border-b border-gray-50 hover:bg-gray-50">
+                                                    <p class="text-sm text-gray-600 mb-2"><span class="font-semibold">{{ $notif->user->name ?? 'Seseorang' }}</span> mengajukan Anda sebagai pengganti untuk {{ $notif->kategori }}.</p>
+                                                    <div class="flex space-x-2">
+                                                        <form action="{{ route('pengajuan-izin.persetujuan-pengganti', $notif->id) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status_pengganti" value="disetujui">
+                                                            <button type="submit" class="px-3 py-1 bg-emerald-500 text-white text-xs rounded hover:bg-emerald-600 transition-colors">Setuju</button>
+                                                        </form>
+                                                        <form action="{{ route('pengajuan-izin.persetujuan-pengganti', $notif->id) }}" method="POST" class="inline">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <input type="hidden" name="status_pengganti" value="ditolak">
+                                                            <button type="submit" class="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors">Tolak</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="px-4 py-3 text-sm text-gray-500 text-center">Belum ada notifikasi baru.</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="text-slate-600 font-medium">
+                                Halo, {{ auth()->user()->name }} 
+                                <span class="text-xs bg-[#284fa0] text-white px-2 py-1 rounded-full ml-1">{{ ucfirst(auth()->user()->role) }}</span>
+                            </div>
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 px-4 py-2 rounded-full font-medium transition-all shadow-sm">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    @endauth
+                    @guest
+                        <a href="{{ route('login') }}" class="bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white px-6 py-2.5 rounded-full font-medium transition-all shadow-md shadow-[#fde402]/50 hover:shadow-lg hover:shadow-[#284fa0]/40">
+                            Login Pegawai
+                        </a>
+                    @endguest
                 </div>
                 <!-- Mobile menu button -->
                 <div class="flex items-center md:hidden">
@@ -59,9 +121,50 @@
                     @endif
                 @endauth
                 
-                <a href="{{ route('login') }}" class="block w-full mt-4 px-3 py-2 bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white rounded-md font-medium transition-colors text-center">
-                    Login Pegawai
-                </a>
+                @auth
+                    <!-- Mobile Notifikasi -->
+                    @if(count($notifikasiPengganti) > 0)
+                        <div class="block px-3 py-2 mt-2 text-sm font-semibold text-slate-700 bg-red-50 rounded-md">
+                            Anda memiliki {{ count($notifikasiPengganti) }} notifikasi penggantian baru.
+                            <div class="mt-2 space-y-2">
+                                @foreach($notifikasiPengganti as $notif)
+                                    <div class="p-3 bg-white border border-red-100 rounded shadow-sm">
+                                        <p class="text-xs text-gray-600 mb-2"><span class="font-semibold">{{ $notif->user->name ?? 'Seseorang' }}</span> mengajukan Anda sebagai pengganti.</p>
+                                        <div class="flex space-x-2">
+                                            <form action="{{ route('pengajuan-izin.persetujuan-pengganti', $notif->id) }}" method="POST" class="flex-1">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status_pengganti" value="disetujui">
+                                                <button type="submit" class="w-full py-1.5 bg-emerald-500 text-white text-xs font-medium rounded hover:bg-emerald-600">Setuju</button>
+                                            </form>
+                                            <form action="{{ route('pengajuan-izin.persetujuan-pengganti', $notif->id) }}" method="POST" class="flex-1">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="status_pengganti" value="ditolak">
+                                                <button type="submit" class="w-full py-1.5 bg-red-500 text-white text-xs font-medium rounded hover:bg-red-600">Tolak</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="block px-3 py-2 mt-2 text-slate-600 font-medium border-t border-gray-100 pt-4">
+                        Halo, {{ auth()->user()->name }} <span class="text-xs font-bold text-[#284fa0]">({{ ucfirst(auth()->user()->role) }})</span>
+                    </div>
+                    <form action="{{ route('logout') }}" method="POST" class="block w-full mt-2">
+                        @csrf
+                        <button type="submit" class="w-full px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-md font-medium transition-colors text-center">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
+                @guest
+                    <a href="{{ route('login') }}" class="block w-full mt-4 px-3 py-2 bg-[#fde402] hover:bg-[#284fa0] text-slate-900 hover:text-white rounded-md font-medium transition-colors text-center">
+                        Login Pegawai
+                    </a>
+                @endguest
             </div>
         </div>
     </nav>

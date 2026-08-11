@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class UserController
 {
@@ -48,9 +49,9 @@ class UserController
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'posisi' => 'required|string|max:255',
             'gaji' => 'required|numeric',
-            'nomor_ktp' => 'required|string|max:255',
+            'nomor_ktp' => 'required|string|numeric|digits:16',
             'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manager,pegawai',
+            'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
         ]);
@@ -106,9 +107,9 @@ class UserController
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'posisi' => 'required|string|max:255',
             'gaji' => 'required|numeric',
-            'nomor_ktp' => 'required|string|max:255',
+            'nomor_ktp' => 'required|string|numeric|digits:16',
             'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manager,pegawai',
+            'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
         ]);

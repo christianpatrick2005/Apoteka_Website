@@ -25,8 +25,8 @@ class AuthController
             // Jika berhasil, perbarui sesi keamanan
             $request->session()->regenerate();
 
-            // Arahkan ke halaman utama dashboard/pegawai
-            return redirect()->intended('/pegawai')->with('success', 'Selamat datang kembali!');
+            // Arahkan ke halaman utama dashboard
+            return redirect()->intended('/')->with('success', 'Selamat datang kembali!');
         }
 
         // 3. Jika gagal (email/password salah), kembalikan ke form dengan pesan error

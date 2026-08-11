@@ -25,48 +25,71 @@
                     <h3 class="text-lg leading-6 font-semibold text-white">Form Data Pegawai</h3>
                 </div>
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[70vh] overflow-y-auto">
-                    <form id="form-pegawai" action="{{ route('pegawai.store') }}" method="POST">
+
+                    @if(session('error'))
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <p class="text-sm text-red-700">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <ul class="list-disc list-inside text-sm text-red-700">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form id="form-pegawai" action="{{ isset($user) ? route('pegawai.update', $user->id) : route('pegawai.store') }}" method="POST">
                         @csrf
+                        @if(isset($user))
+                            @method('PUT')
+                        @endif
+
                         <!-- Left Column -->
                         <div class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input type="text" name="name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Password</label>
+                                <label class="block text-sm font-medium text-gray-700">Password 
+                                    @isset($user) <span class="text-xs text-red-500">(Kosongkan jika tidak ingin diubah)</span> @endisset
+                                </label>
                                 <input type="password" name="password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Role</label>
                                 <select name="role" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                                    <option value="pegawai">Pegawai</option>
-                                    <option value="manajer">Manajer</option>
+                                    <option value="pegawai" {{ old('role', $user->role ?? '') == 'pegawai' ? 'selected' : '' }}>Pegawai</option>
+                                    <option value="manajer" {{ old('role', $user->role ?? '') == 'manajer' ? 'selected' : '' }}>Manajer</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nomor KTP</label>
-                                <input type="number" name="nomor_ktp" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="number" name="nomor_ktp" value="{{ old('nomor_ktp', $user->nomor_ktp ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nomor HP</label>
-                                <input type="text" name="nomor_hp" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="nomor_hp" value="{{ old('nomor_hp', $user->nomor_hp ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Posisi</label>
-                                <input type="text" name="posisi" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="posisi" value="{{ old('posisi', $user->posisi ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Gaji</label>
-                                <input type="text" name="gaji" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="gaji" value="{{ old('gaji', $user->gaji ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Jatah Cuti Tahunan</label>
-                                <input type="number" name="jatah_cuti_tahunan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="number" name="jatah_cuti_tahunan" value="{{ old('jatah_cuti_tahunan', $user->jatah_cuti_tahunan ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                         </div>
                         
@@ -74,45 +97,45 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Tempat Lahir</label>
-                                <input type="text" name="tempat_lahir" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir', $user->tempat_lahir ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Tanggal Lahir</label>
-                                <input type="date" name="tanggal_lahir" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $user->tanggal_lahir ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Agama</label>
-                                <input type="text" name="agama" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="agama" value="{{ old('agama', $user->agama ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
                                 <select name="jenis_kelamin" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
+                                    <option value="Laki-laki" {{ old('jenis_kelamin', $user->jenis_kelamin ?? '') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ old('jenis_kelamin', $user->jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Status Pernikahan</label>
                                 <select name="status_pernikahan" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                                    <option value="Belum Menikah">Belum Menikah</option>
-                                    <option value="Menikah">Menikah</option>
+                                    <option value="Belum Menikah" {{ old('status_pernikahan', $user->status_pernikahan ?? '') == 'Belum Menikah' ? 'selected' : '' }}>Belum Menikah</option>
+                                    <option value="Menikah" {{ old('status_pernikahan', $user->status_pernikahan ?? '') == 'Menikah' ? 'selected' : '' }}>Menikah</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Kewarganegaraan</label>
-                                <input type="text" name="kewarganegaraan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="text" name="kewarganegaraan" value="{{ old('kewarganegaraan', $user->kewarganegaraan ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Alamat Asal</label>
-                                <textarea name="alamat_asal" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm"></textarea>
+                                <textarea name="alamat_asal" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">{{ old('alamat_asal', $user->alamat_asal ?? '') }}</textarea>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Alamat Surabaya</label>
-                                <textarea name="alamat_surabaya" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm"></textarea>
+                                <textarea name="alamat_surabaya" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">{{ old('alamat_surabaya', $user->alamat_surabaya ?? '') }}</textarea>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Jatah Cuti Kehamilan</label>
-                                <input type="number" name="jatah_cuti_kehamilan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <input type="number" name="jatah_cuti_kehamilan" value="{{ old('jatah_cuti_kehamilan', $user->jatah_cuti_kehamilan ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                         </div>
                     </form>

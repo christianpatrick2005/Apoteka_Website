@@ -24,7 +24,24 @@
                     <h3 class="text-lg leading-6 font-semibold text-white">Form Dokumen Pegawai</h3>
                 </div>
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[70vh] overflow-y-auto">
+                    @if(session('error'))
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <p class="text-sm text-red-700">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <ul class="list-disc list-inside text-sm text-red-700">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form id="form-dokumen" action="{{ route('dokumen.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                        @csrf
+                        @method('PUT')
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Pilih Pegawai (User ID)</label>
                             <select name="user_id" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">

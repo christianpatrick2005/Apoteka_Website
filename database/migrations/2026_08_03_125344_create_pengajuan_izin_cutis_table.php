@@ -36,6 +36,8 @@ return new class extends Migration
             
             // Status persetujuan oleh manajer
             $table->enum('status_pengajuan', ['pending', 'disetujui', 'ditolak'])->default('pending');
+            // status pengajuan sebagai pengganti
+            $table->enum('status_pengganti', ['pending', 'disetujui', 'ditolak'])->default('pending');
             // Informasi persetujuan
             $table->date('tanggal_persetujuan')->nullable();
             $table->text('komentar_manajer')->nullable();

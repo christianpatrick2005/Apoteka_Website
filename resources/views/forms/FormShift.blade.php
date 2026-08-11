@@ -25,7 +25,24 @@
                     <h3 class="text-lg leading-6 font-semibold text-white" id="modal-title">Form Jadwal Shift</h3>
                 </div>
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    @if(session('error'))
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <p class="text-sm text-red-700">{{ session('error') }}</p>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                            <ul class="list-disc list-inside text-sm text-red-700">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form id="form-shift" action="{{ route('shift.store') }}" method="POST" class="space-y-4">
+                        @csrf
+                        @method('PUT')
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nama Shift</label>
                             <input type="text" name="nama_shift" placeholder="Misal: Pagi, Siang, Malam" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">

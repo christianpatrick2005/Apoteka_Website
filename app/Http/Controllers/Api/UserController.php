@@ -46,7 +46,7 @@ class UserController
             'gaji' => 'required|numeric',
             'nomor_ktp' => 'required|string|max:255',
             'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manager,pegawai',
+            'role' => 'required|in:manajer,pegawai',
             'jatah_cuti' => 'required|integer',
         ]);
 
@@ -120,7 +120,7 @@ class UserController
             'gaji' => 'required|numeric',
             'nomor_ktp' => 'required|string|max:255',
             'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manager,pegawai',
+            'role' => 'required|in:manajer,pegawai',
             'jatah_cuti' => 'required|integer',
         ]);
 

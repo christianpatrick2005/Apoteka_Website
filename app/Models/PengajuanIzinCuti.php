@@ -24,6 +24,7 @@ class PengajuanIzinCuti extends Model
         'tanggal_selesai',
         'berkas_pendukung',
         'status_pengajuan',
+        'status_pengganti',
         'tanggal_persetujuan',
         'komentar_manajer',
     ];

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('jenis_kelamin')->nullable();
             $table->string('posisi')->nullable();
             $table->string('gaji')->nullable();
-            $table->integer('nomor_ktp');
+            $table->string('nomor_ktp', 16);
             $table->string('kewarganegaraan')->nullable();
             
             $table->enum('role', ['manajer', 'pegawai'])->default('pegawai');

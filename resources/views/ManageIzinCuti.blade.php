@@ -125,25 +125,11 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex justify-end items-center space-x-2">
                                     
-                                    {{-- Untuk Manager: Tombol Approve/Reject --}}
-                                    @if(auth()->check() && auth()->user()->role === 'manager' && $item->status_pengajuan === 'pending')
-                                        <form action="{{ route('pengajuan-izin.persetujuan', $item->id) }}" method="POST" class="inline m-0">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="status_pengajuan" value="disetujui">
-                                            <button type="submit" class="inline-flex items-center justify-center p-1.5 text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-md transition-colors shadow-sm" title="Setujui">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                                            </button>
-                                        </form>
-
-                                        <form action="{{ route('pengajuan-izin.persetujuan', $item->id) }}" method="POST" class="inline m-0">
-                                            @csrf
-                                            @method('PUT')
-                                            <input type="hidden" name="status_pengajuan" value="ditolak">
-                                            <button type="submit" class="inline-flex items-center justify-center p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-md transition-colors shadow-sm" title="Tolak">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                            </button>
-                                        </form>
+                                    {{-- Untuk Manager: Tombol Proses Persetujuan --}}
+                                    @if(auth()->check() && auth()->user()->role === 'manajer' && $item->status_pengajuan === 'pending')
+                                        <a href="{{ route('pengajuan-izin.show-persetujuan', $item->id) }}" class="inline-flex items-center justify-center p-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-md transition-colors shadow-sm" title="Proses Persetujuan">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                        </a>
                                     @endif
 
                                     {{-- Untuk Pemilik Pengajuan: Edit / Hapus --}}
