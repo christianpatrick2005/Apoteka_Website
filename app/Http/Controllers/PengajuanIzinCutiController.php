@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 class PengajuanIzinCutiController 
 {
@@ -73,11 +74,40 @@ class PengajuanIzinCutiController
         }
 
         // Simpan ke database
-        PengajuanIzinCuti::create($data + [
+        $pengajuan = PengajuanIzinCuti::create($data + [
             // Masukkan array pathBerkas. 
             // Berkat $casts di Model, Laravel akan otomatis mengubahnya menjadi JSON di MySQL.
             'berkas_pendukung' => !empty($pathBerkas) ? $pathBerkas : null,
         ]);
+
+        // 6. Kirim Notifikasi ke User Pengganti via OneSignal
+        if ($pengajuan->user_pengganti_id) {
+            $pengganti = User::find($pengajuan->user_pengganti_id);
+            if ($pengganti && $pengganti->onesignal_id) {
+                $pengaju = User::find($pengajuan->user_id);
+                $namaPengaju = $pengaju ? $pengaju->name : 'Seseorang';
+                
+                // Gunakan environment variable ONESIGNAL_REST_API_KEY dan ONESIGNAL_APP_ID
+                $apiKey = env('ONESIGNAL_REST_API_KEY', 'YOUR_REST_API_KEY');
+                $appId = env('ONESIGNAL_APP_ID', 'YOUR_APP_ID');
+
+                Http::withHeaders([
+                    'Authorization' => 'Basic ' . $apiKey,
+                    'Content-Type' => 'application/json',
+                ])->post('https://onesignal.com/api/v1/notifications', [
+                    'app_id' => $appId,
+                    'include_player_ids' => [$pengganti->onesignal_id],
+                    'contents' => [
+                        'en' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti.",
+                        'id' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti."
+                    ],
+                    'headings' => [
+                        'en' => "Butuh Persetujuan Cuti",
+                        'id' => "Butuh Persetujuan Cuti"
+                    ]
+                ]);
+            }
+        }
 
         return back()->with('success', 'Pengajuan berhasil dikirim!');
     }

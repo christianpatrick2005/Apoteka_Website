@@ -162,4 +162,36 @@ class UserController
             'pesan'  => 'Data user berhasil dihapus secara permanen'
         ], 200);
     }
+
+    public function updateOneSignalId(Request $request, string $id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Data user tidak ditemukan'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'onesignal_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Validasi data gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user->onesignal_id = $request->onesignal_id;
+        $user->save();
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'OneSignal ID berhasil disimpan'
+        ], 200);
+    }
 }
