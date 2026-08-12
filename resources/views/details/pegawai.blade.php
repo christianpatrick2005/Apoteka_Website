@@ -99,6 +99,93 @@
                 </div>
             </div>
 
+            <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50">
+                <h3 class="text-lg leading-6 font-semibold text-slate-900">Jadwal Shift</h3>
+            </div>
+
+            <div class="px-6 py-4 bg-white border-b border-gray-100">
+                    <form action="{{ route('jadwal.store') }}" method="POST" class="flex flex-col sm:flex-row gap-4 items-end">
+                        @csrf
+                        <!-- Input tersembunyi untuk menyimpan ID pegawai ini -->
+                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+
+                        <div class="w-full sm:w-1/3">
+                            <label class="block text-xs font-medium text-gray-700">Tanggal</label>
+                            <input type="date" name="tanggal" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0]">
+                        </div>
+
+                        <div class="w-full sm:w-1/3">
+                            <label class="block text-xs font-medium text-gray-700">Pilih Shift</label>
+                            <select name="shift_id" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0] bg-white">
+                                <option value="" disabled selected>-- Pilih Shift --</option>
+                                @foreach($shifts as $shift)
+                                    <option value="{{ $shift->id }}">{{ $shift->nama_shift }} ({{ \Carbon\Carbon::parse($shift->jam_masuk)->format('H:i') }} - {{ \Carbon\Carbon::parse($shift->jam_keluar)->format('H:i') }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="w-full sm:w-1/3">
+                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-[#284fa0] text-sm font-medium text-white hover:bg-[#1e3b7a] focus:outline-none">
+                                + Tambah Jadwal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            <div class="p-0 overflow-x-auto">
+                <!-- Mengecek apakah pegawai ini punya jadwal atau belum -->
+                @if($user->jadwalPegawai && $user->jadwalPegawai->count() > 0)
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Hari / Tanggal</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Shift</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            
+                            <!-- Looping data jadwal yang sudah dibawa oleh Controller -->
+                            @foreach($user->jadwalPegawai as $jadwal)
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ \Carbon\Carbon::parse($jadwal->tanggal)->translatedFormat('l, d F Y')}}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <!-- Menampilkan nama shift (Asumsi berelasi dengan tabel Shift) -->
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            {{ $jadwal->shift->nama_shift ?? 'Nama Shift' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <!-- Tombol Hapus -->
+                                        <form action="{{ route('jadwal.destroy', $jadwal->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?');" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">
+                                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            
+                        </tbody>
+                    </table>
+                @else
+                    <!-- Tampilan jika tabel jadwal_pegawai untuk user ini masih kosong -->
+                    <div class="px-6 py-8 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="mt-4 text-sm text-gray-500">Belum ada jadwal shift yang ditetapkan untuk pegawai ini.</p>
+                    </div>
+                @endif
+            </div>
+
         </div>
     </div>
 

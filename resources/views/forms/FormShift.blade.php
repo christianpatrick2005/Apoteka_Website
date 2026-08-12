@@ -40,9 +40,24 @@
                             </ul>
                         </div>
                     @endif
+
+                    @if(session('success'))
+                        <div class="mb-4 bg-green-50 border-l-4 border-green-500 p-4 rounded-md shadow-sm">
+                            <div class="flex items-center">
+                                <!-- Icon Checklist -->
+                                <svg class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                            </div>
+                        </div>
+                    @endif
+
                     <form id="form-shift" action="{{ route('shift.store') }}" method="POST" class="space-y-4">
                         @csrf
-                        @method('PUT')
+                        @if(isset($user))
+                            @method('PUT')
+                        @endif
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nama Shift</label>
                             <input type="text" name="nama_shift" placeholder="Misal: Pagi, Siang, Malam" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">

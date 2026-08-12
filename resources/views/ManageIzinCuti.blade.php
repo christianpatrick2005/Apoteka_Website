@@ -26,7 +26,6 @@
                     <h1 class="text-3xl font-extrabold text-slate-900">Manajemen Izin & Cuti</h1>
                     <p class="mt-2 text-sm text-slate-500">Kelola pengajuan izin dan cuti pegawai.</p>
                 </div>
-                {{-- Hanya non-manager atau semua orang bisa mengajukan cuti? --}}
                 <a href="{{ route('pengajuan-izin.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-[#284fa0] hover:bg-[#1e3b7a] shadow-sm transition-colors">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

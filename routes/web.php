@@ -19,25 +19,26 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-//route untuk function kustom dalam controller
-Route::put('/pengajuan-izin/{pengajuan}/persetujuan-pengganti', [PengajuanIzinCutiController::class, 'persetujuanPengganti'])->name('pengajuan-izin.persetujuan-pengganti');
-Route::get('/pengajuan-izin/{pengajuan}/persetujuan', [PengajuanIzinCutiController::class, 'showPersetujuanForm'])->name('pengajuan-izin.show-persetujuan');
-Route::put('/pengajuan-izin/{pengajuan}/persetujuan', [PengajuanIzinCutiController::class, 'persetujuan'])->name('pengajuan-izin.persetujuan');
-
-// harus login dulu
+// HARUS LOGIN DULU
 Route::middleware(['auth'])->group(function () {
-    // Rute yang hanya boleh diakses Manager
+    
+    Route::put('/pengajuan-izin/{pengajuan}/persetujuan-pengganti', [PengajuanIzinCutiController::class, 'persetujuanPengganti'])->name('pengajuan-izin.persetujuan-pengganti');
+    Route::get('/pengajuan-izin/{pengajuan}/persetujuan', [PengajuanIzinCutiController::class, 'showPersetujuanForm'])->name('pengajuan-izin.show-persetujuan');
+    Route::put('/pengajuan-izin/{pengajuan}/persetujuan', [PengajuanIzinCutiController::class, 'persetujuan'])->name('pengajuan-izin.persetujuan');
+
+    // Rute resource pengajuan izin diletakkan di luar grup manajer/pegawai
+    Route::resource('pengajuan-izin', PengajuanIzinCutiController::class)->parameters(['pengajuan-izin' => 'pengajuanIzinCuti']);
+
     Route::middleware(['manajer'])->group(function () {
         Route::resource('pegawai', UserController::class)->parameters(['pegawai' => 'user']);
         Route::resource('shift', ShiftController::class);
         Route::resource('jadwal', JadwalPegawaiController::class)->parameters(['jadwal' => 'jadwalPegawai']);
         Route::resource('dokumen', DokumenPegawaiController::class)->parameters(['dokumen' => 'dokumenPegawai']);
-        Route::resource('pengajuan-izin', PengajuanIzinCutiController::class)->parameters(['pengajuan-izin' => 'pengajuanIzinCuti']);
     });
 
+
     Route::middleware(['pegawai'])->group(function () {
-        Route::resource('pengajuan-izin', PengajuanIzinCutiController::class)->parameters(['pengajuan-izin' => 'pengajuanIzinCuti']);
+        // Kosongkan sementara jika belum ada halaman yang murni HANYA untuk pegawai
     });
 
 });
-

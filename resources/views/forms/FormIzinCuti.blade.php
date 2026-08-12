@@ -78,19 +78,28 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- x-data untuk mendeteksi pilihan kategori secara real-time -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-data="{ pilihanKategori: '{{ old('kategori', $pengajuanIzinCuti->kategori ?? 'izin') }}' }">
+                            
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Kategori <span class="text-red-500">*</span></label>
-                                <select name="kategori" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                                    <option value="izin" {{ (old('kategori', $pengajuanIzinCuti->kategori ?? '') == 'izin') ? 'selected' : '' }}>Izin</option>
-                                    <option value="cuti" {{ (old('kategori', $pengajuanIzinCuti->kategori ?? '') == 'cuti') ? 'selected' : '' }}>Cuti</option>
+                                <!-- x-model agar Alpine.js tahu saat pilihan ini diubah -->
+                                <select name="kategori" required x-model="pilihanKategori" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                    <option value="izin">Izin</option>
+                                    <option value="cuti">Cuti</option>
                                 </select>
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Jenis</label>
-
+                            <!-- x-show agar div ini HANYA MUNCUL jika Kategori = 'cuti' -->
+                            <div x-show="pilihanKategori === 'cuti'" x-transition>
+                                <label class="block text-sm font-medium text-gray-700">Jenis Cuti</label>
+                                <select name="jenis_cuti" id="jenis_cuti" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                    <option value="">-- Pilih Jenis --</option>
+                                    <option value="cuti_tahunan" {{ (old('jenis_cuti', $pengajuanIzinCuti->jenis_cuti ?? '') == 'cuti_tahunan') ? 'selected' : '' }}>Tahunan</option>
+                                    <option value="cuti_kehamilan" {{ (old('jenis_cuti', $pengajuanIzinCuti->jenis_cuti ?? '') == 'cuti_kehamilan') ? 'selected' : '' }}>Melahirkan</option>
+                                </select>
                             </div>
+                            
                         </div>
 
                         <div>

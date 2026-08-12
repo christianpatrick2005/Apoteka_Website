@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Shift;
 
 class UserController
 {
@@ -76,7 +77,11 @@ class UserController
     {
         $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
 
-        return view('details.pegawai', compact('user'));
+        // Ambil daftar pilihan shift (Pagi, Siang, Malam, dll)
+        $shifts = Shift::all(); 
+
+        // Kirimkan variabel $shifts ke view
+        return view('details.pegawai', compact('user', 'shifts'));
     }
 
     /**
