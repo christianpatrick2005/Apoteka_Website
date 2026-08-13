@@ -52,52 +52,77 @@
                         </div>
                     @endif
 
-                    <form id="form-dokumen" action="{{ route('dokumen.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <form id="form-dokumen" action="{{ isset($dokumenPegawai) ? route('dokumen.update', $dokumenPegawai->id) : route('dokumen.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
-                        @if(isset($user))
+                        @if(isset($dokumenPegawai))
                             @method('PUT')
                         @endif
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Pilih Pegawai (User ID)</label>
                             <select name="user_id" class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                                 <option value="" disabled selected>-- Pilih Pegawai --</option>
-
                                 <!-- looping data user -->
                                 @foreach($users as $user) 
-                                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }} <!--agar data tidak hilang saat direfresh --> >
-                                        {{ $user->name }} - {{ $user->posisi }} <!-- teks yang ditampilkan -->
+                                    <option value="{{ $user->id }}" {{ (old('user_id', $dokumenPegawai->user_id ?? '') == $user->id) ? 'selected' : '' }}> <!--agar data tidak hilang saat direfresh --> >
+                                        {{ $user->name }} - {{ $user->posisi }}  <!-- teks yang ditampilkan -->
                                     </option>
                                 @endforeach
-
                             </select>
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File Ijasah</label>
                             <input type="file" name="ijasah" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->ijasah)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->ijasah) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Ijasah</a></p>
+                            @endif
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File Transkrip</label>
                             <input type="file" name="transkrip" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->transkrip)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->transkrip) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Transkrip</a></p>
+                            @endif
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File KTP</label>
                             <input type="file" name="ktp" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->ktp)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->ktp) }}" target="_blank" class="text-blue-600 hover:underline">Lihat KTP</a></p>
+                            @endif
                         </div>
+                        
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">File Surat Tanda Registrasi</label>
+                            <label class="block text-sm font-medium text-gray-700">File Surat Tanda Registrasi (STR)</label>
                             <input type="file" name="str" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->str)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->str) }}" target="_blank" class="text-blue-600 hover:underline">Lihat STR</a></p>
+                            @endif
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Sertifikat Kompetensi</label>
                             <input type="file" name="sertifikat_kompetensi" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->sertifikat_kompetensi)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->sertifikat_kompetensi) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Sertifikat</a></p>
+                            @endif
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File SIPA</label>
                             <input type="file" name="sipa" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->sipa)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->sipa) }}" target="_blank" class="text-blue-600 hover:underline">Lihat SIPA</a></p>
+                            @endif
                         </div>
+                        
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tanggal Kadaluarsa SIPA</label>
-                            <input type="date" name="tanggal_kadaluarsa_sipa" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                            <!-- Tambahkan atribut value agar tanggal lama muncul -->
+                            <input type="date" name="tanggal_kadaluarsa_sipa" value="{{ old('tanggal_kadaluarsa_sipa', isset($dokumenPegawai) && $dokumenPegawai->tanggal_kadaluarsa_sipa ? \Carbon\Carbon::parse($dokumenPegawai->tanggal_kadaluarsa_sipa)->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                         </div>
                     </form>
                 </div>

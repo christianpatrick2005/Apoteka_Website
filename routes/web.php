@@ -7,6 +7,7 @@ use App\Http\Controllers\JadwalPegawaiController;
 use App\Http\Controllers\DokumenPegawaiController;
 use App\Http\Controllers\PengajuanIzinCutiController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return view('MainPage');
@@ -34,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('shift', ShiftController::class);
         Route::resource('jadwal', JadwalPegawaiController::class)->parameters(['jadwal' => 'jadwalPegawai']);
         Route::resource('dokumen', DokumenPegawaiController::class)->parameters(['dokumen' => 'dokumenPegawai']);
+        Route::get('/laporan/sisa-cuti', [LaporanController::class, 'sisaCuti'])->name('laporan.sisa-cuti');
     });
 
 

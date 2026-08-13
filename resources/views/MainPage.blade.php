@@ -34,12 +34,12 @@
                         </p>
                         <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div class="rounded-full shadow-md shadow-[#284fa0]/30">
-                                <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-[#284fa0] hover:bg-[#1e3b7a] md:py-4 md:text-lg md:px-10 transition-all">
+                                <a href="https://shopee.co.id/apoteka_bm#product_list" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-[#284fa0] hover:bg-[#1e3b7a] md:py-4 md:text-lg md:px-10 transition-all">
                                     Pesan Obat
                                 </a>
                             </div>
                             <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#eb2128] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
+                                <a href="https://shopee.co.id/apoteka_bm#product_list" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#eb2128] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
                                     Lihat Produk
                                 </a>
                             </div>
@@ -134,46 +134,80 @@
         </div>
     </div>
 
-    <!-- Category Section -->
+    <!-- Testimonial Section -->
     <div class="py-16 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Kategori Populer</h2>
+            <div class="text-center">
+                <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Apa Kata Pelanggan Kami</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-sm text-slate-500">Pengalaman nyata dari mereka yang telah mempercayakan kebutuhan kesehatannya bersama Apoteka.</p>
+            </div>
             
-            <div class="mt-8 grid grid-cols-2 gap-y-6 gap-x-4 sm:grid-cols-2 md:grid-cols-4 lg:gap-x-8">
-                <div class="group relative bg-[#fde402]/20 rounded-2xl p-6 hover:bg-[#fde402] transition-colors cursor-pointer text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <div class="p-3 bg-white rounded-full group-hover:bg-[#284fa0] transition-colors mb-4">
-                        <svg class="h-8 w-8 text-[#284fa0] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
+            <div class="mt-12 grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-2 lg:grid-cols-3">
+                
+                <!-- Testimoni 1 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div>
+                        <!-- Rating Bintang -->
+                        <div class="flex items-center mb-4 space-x-1">
+                            @for($i = 0; $i < 5; $i++)
+                                <svg class="w-5 h-5 text-[#fde402]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @endfor
+                        </div>
+                        <p class="text-slate-600 italic leading-relaxed mb-6">"Pelayanan di Apoteka sangat cepat dan profesional. Obat resep yang saya butuhkan selalu tersedia dan produknya dijamin 100% asli."</p>
                     </div>
-                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">Obat Resep</h3>
+                    <div class="flex items-center pt-4 border-t border-gray-50">
+                        <div class="h-10 w-10 rounded-full bg-[#284fa0]/10 flex items-center justify-center text-[#284fa0] font-bold">BS</div>
+                        <div class="ml-3">
+                            <p class="text-sm font-bold text-slate-900">Budi Santoso</p>
+                            <p class="text-xs text-slate-500">Wiraswasta</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="group relative bg-[#fde402]/20 rounded-2xl p-6 hover:bg-[#fde402] transition-colors cursor-pointer text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <div class="p-3 bg-white rounded-full group-hover:bg-[#284fa0] transition-colors mb-4">
-                        <svg class="h-8 w-8 text-[#284fa0] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                <!-- Testimoni 2 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div>
+                        <!-- Rating Bintang -->
+                        <div class="flex items-center mb-4 space-x-1">
+                            @for($i = 0; $i < 5; $i++)
+                                <svg class="w-5 h-5 text-[#fde402]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @endfor
+                        </div>
+                        <p class="text-slate-600 italic leading-relaxed mb-6">"Sangat terbantu dengan pelayanan apotek ini. Harga produk vitaminnya sangat bersaing dan konsultasi dengan apotekernya ramah sekali."</p>
                     </div>
-                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">Vitamin</h3>
+                    <div class="flex items-center pt-4 border-t border-gray-50">
+                        <div class="h-10 w-10 rounded-full bg-[#fde402]/20 flex items-center justify-center text-slate-800 font-bold">SA</div>
+                        <div class="ml-3">
+                            <p class="text-sm font-bold text-slate-900">Siti Aminah</p>
+                            <p class="text-xs text-slate-500">Ibu Rumah Tangga</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="group relative bg-[#fde402]/20 rounded-2xl p-6 hover:bg-[#fde402] transition-colors cursor-pointer text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <div class="p-3 bg-white rounded-full group-hover:bg-[#284fa0] transition-colors mb-4">
-                        <svg class="h-8 w-8 text-[#284fa0] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
+                <!-- Testimoni 3 -->
+                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div>
+                        <!-- Rating Bintang -->
+                        <div class="flex items-center mb-4 space-x-1">
+                            @for($i = 0; $i < 5; $i++)
+                                <svg class="w-5 h-5 text-[#fde402]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @endfor
+                        </div>
+                        <p class="text-slate-600 italic leading-relaxed mb-6">"Apotek terpercaya keluarga kami. Pengiriman alat kesehatan selalu tepat waktu dan kualitasnya sangat terjamin."</p>
                     </div>
-                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">Perawatan Tubuh</h3>
-                </div>
-
-                <div class="group relative bg-[#fde402]/20 rounded-2xl p-6 hover:bg-[#fde402] transition-colors cursor-pointer text-center flex flex-col items-center justify-center min-h-[160px]">
-                    <div class="p-3 bg-white rounded-full group-hover:bg-[#284fa0] transition-colors mb-4">
-                        <svg class="h-8 w-8 text-[#284fa0] group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
+                    <div class="flex items-center pt-4 border-t border-gray-50">
+                        <div class="h-10 w-10 rounded-full bg-[#284fa0]/10 flex items-center justify-center text-[#284fa0] font-bold">AW</div>
+                        <div class="ml-3">
+                            <p class="text-sm font-bold text-slate-900">Andi Wijaya</p>
+                            <p class="text-xs text-slate-500">Pegawai Swasta</p>
+                        </div>
                     </div>
-                    <h3 class="font-semibold text-slate-900 group-hover:text-slate-900">Alat Kesehatan</h3>
                 </div>
             </div>
         </div>

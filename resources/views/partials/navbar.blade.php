@@ -49,13 +49,13 @@
             <div class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('MainPage') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Beranda</a>
                 <a href="https://shopee.co.id/apoteka_bm#product_list" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Produk</a>
-                <a href="#" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Tentang Kami</a>
 
                 <!-- verifikasi role -->
                 @auth
                     @if(auth()->user()->role === 'manajer')
                         <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Data</a>
                         <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Pengajuan Izin/Cuti</a>
+                        <a href="{{ route('laporan.sisa-cuti') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Laporan</a>
                     @endif
 
                     @if(auth()->user()->role === 'pegawai')
@@ -178,14 +178,13 @@
     <!-- Mobile Menu Dropdown -->
     <div id="mobile-menu-dropdown" class="md:hidden border-t border-gray-100 hidden">
         <div class="px-4 pt-2 pb-4 space-y-2 bg-white">
-            <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Beranda</a>
-            <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Produk</a>
-            <a href="#" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Tentang Kami</a>
-            
+            <a href="{{ route('MainPage') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Beranda</a>
+            <a href="https://shopee.co.id/apoteka_bm#product_list" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Produk</a>            
             @auth
                 @if(auth()->user()->role === 'manajer')
                     <a href="{{ route('pegawai.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Manage Data</a>
                     <a href="{{ route('pengajuan-izin.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Pengajuan Izin/Cuti</a>
+                    <a href="{{ route('laporan.sisa-cuti') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Laporan</a>
                 @endif
 
                 @if(auth()->user()->role === 'pegawai')

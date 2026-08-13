@@ -83,7 +83,8 @@ class DokumenPegawaiController
     public function edit(DokumenPegawai $dokumenPegawai)
     {
         //compact untuk membawa data lama
-        return view('forms.FormDokumen',compact('dokumenPegawai'));
+        $users = User::all();
+        return view('forms.FormDokumen',compact('dokumenPegawai','users'));
     }
 
     /**
