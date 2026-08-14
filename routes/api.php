@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ShiftController;
 use App\Http\Controllers\Api\JadwalPegawaiController;
 // URL: http://apoteka.test/api/pengajuan-izincuti
 Route::apiResource('pengajuan-izincuti', PengajuanIzinCutiController::class);
+Route::patch('pengajuan-izincuti/{id}/approve-pengganti', [PengajuanIzinCutiController::class, 'approvePengganti']);
 
 // URL: http://apoteka.test/api/users
 Route::apiResource('users',UserController::class);
