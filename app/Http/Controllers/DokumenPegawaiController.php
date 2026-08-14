@@ -36,6 +36,7 @@ class DokumenPegawaiController
         // 1. Validasi input dari form HTML
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
+            'transkrip' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'ktp'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'ijasah'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'str'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
@@ -53,7 +54,7 @@ class DokumenPegawaiController
         $data = $request->only(['user_id', 'tanggal_kadaluarsa_sipa']);
 
         // 3. Proses upload masing-masing file
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('uploads/dokumen', 'public');
@@ -96,6 +97,7 @@ class DokumenPegawaiController
         $validator = Validator::make($request->all(), [
             'user_id' => 'sometimes|exists:users,id',
             'ktp'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'transkrip' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'ijasah'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'str'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'sertifikat_kompetensi' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
@@ -111,7 +113,7 @@ class DokumenPegawaiController
         $data = $request->only(['user_id', 'tanggal_kadaluarsa_sipa']);
 
         // Cek dan timpa file lama dengan file baru jika ada
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 // Hapus file fisik lama di folder storage agar tidak menumpuk

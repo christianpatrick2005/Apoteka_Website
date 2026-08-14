@@ -70,7 +70,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File Ijasah</label>
                             <input type="file" name="ijasah" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
