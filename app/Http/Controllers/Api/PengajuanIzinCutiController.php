@@ -247,4 +247,27 @@ class PengajuanIzinCutiController
             'pesan'  => 'Data dan file izin cuti berhasil dihapus secara permanen'
         ], 200);
     }
+
+    /**
+     * Setujui sebagai pengganti
+     */
+    public function approvePengganti(string $id)
+    {
+        $pengajuan = PengajuanIzinCuti::find($id);
+
+        if (!$pengajuan) {
+            return response()->json([
+                'status' => 'error',
+                'pesan'  => 'Data izin cuti tidak ditemukan'
+            ], 404);
+        }
+
+        $pengajuan->update(['status_pengganti' => 'disetujui']);
+
+        return response()->json([
+            'status' => 'success',
+            'pesan'  => 'Status pengganti berhasil disetujui',
+            'data'   => $pengajuan
+        ], 200);
+    }
 }
