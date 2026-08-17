@@ -64,7 +64,7 @@
                                 <option value="" disabled selected>-- Pilih Pegawai --</option>
                                 <!-- looping data user -->
                                 @foreach($users as $user) 
-                                    <option value="{{ $user->id }}" {{ (old('user_id', $dokumenPegawai->user_id ?? '') == $user->id) ? 'selected' : '' }}> <!--agar data tidak hilang saat direfresh --> >
+                                    <option value="{{ $user->id }}" {{ (old('user_id', $dokumenPegawai->user_id ?? '') == $user->id) ? 'selected' : '' }}> <!--agar data tidak hilang saat direfresh -->
                                         {{ $user->name }} - {{ $user->posisi }}  <!-- teks yang ditampilkan -->
                                     </option>
                                 @endforeach

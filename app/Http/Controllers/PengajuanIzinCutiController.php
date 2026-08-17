@@ -45,8 +45,8 @@ class PengajuanIzinCutiController
             'keterangan' => 'required|string',
             'alamat_tempat' => 'required|string',
             'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
+            'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
+            'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
             'berkas_pendukung' => 'nullable|array', // Harus array
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240', // Validasi isi array
         ]);
@@ -143,8 +143,8 @@ class PengajuanIzinCutiController
             'keterangan' => 'required|string',
             'alamat_tempat' => 'required|string',
             'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
+            'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
+            'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
             'berkas_pendukung' => 'nullable|array',
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240',
         ]);

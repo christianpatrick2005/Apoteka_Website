@@ -60,15 +60,15 @@
                         @endif
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nama Shift</label>
-                            <input type="text" name="nama_shift" placeholder="Misal: Pagi, Siang, Malam" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                            <input type="text" name="nama_shift" value="{{ old('nama_shift', $shift->nama_shift ?? '') }}" placeholder="Misal: Pagi, Siang, Malam" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jam Masuk</label>
-                            <input type="time" name="jam_masuk" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                            <input type="time" name="jam_masuk" value="{{ old('jam_masuk', $shift->jam_masuk ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jam Keluar</label>
-                            <input type="time" name="jam_keluar" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                            <input type="time" name="jam_keluar" value="{{ old('jam_keluar', $shift->jam_keluar ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                         </div>
                     </form>
                 </div>
