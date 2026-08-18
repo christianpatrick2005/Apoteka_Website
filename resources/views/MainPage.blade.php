@@ -44,7 +44,7 @@
                                 </a>
                             </div>
                             <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="#" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#284fa0] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
+                                <a href="https://wa.me/6285182238223?text=Halo%20Apoteka,%20saya%20ingin%20konsultasi" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#284fa0] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
                                     Konsultasi
                                 </a>
                             </div>

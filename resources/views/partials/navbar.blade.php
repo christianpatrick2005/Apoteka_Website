@@ -68,8 +68,8 @@
                     <div class="flex items-center space-x-4">
                         
                         <!-- Notification Dropdown Desktop -->
-                        <div class="relative group">
-                            <button class="relative p-2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors">
+                        <div class="relative " id="notif-container">
+                            <button id="notif-btn" class="relative p-2 text-slate-500 hover:text-slate-700 focus:outline-none transition-colors">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                                 
                                 <!-- Badge Total Notifikasi -->
@@ -79,7 +79,7 @@
                             </button>
                             
                             <!-- Dropdown Menu Desktop -->
-                            <div class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block border border-gray-100">
+                            <div id="notif-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg py-1 z-50 hidden border border-gray-100">
                                 <div class="px-4 py-2 border-b border-gray-100 font-semibold text-sm text-gray-700">Notifikasi</div>
                                 
                                 @if($totalNotif > 0)
@@ -286,5 +286,26 @@
                 menu.classList.toggle('hidden');
             });
         }
+
+        // Logika untuk Desktop Notifikasi Dropdown
+        const notifBtn = document.getElementById('notif-btn');
+        const notifDropdown = document.getElementById('notif-dropdown');
+        const notifContainer = document.getElementById('notif-container');
+
+        if (notifBtn && notifDropdown && notifContainer) {
+            // Tampilkan atau sembunyikan dropdown saat tombol ditekan
+            notifBtn.addEventListener('click', function (e) {
+                e.stopPropagation(); // Mencegah klik tombol menutup dropdown seketika
+                notifDropdown.classList.toggle('hidden');
+            });
+
+            // Otomatis menutup dropdown jika klik di area mana saja selain area notifikasi
+            document.addEventListener('click', function (e) {
+                if (!notifContainer.contains(e.target)) {
+                    notifDropdown.classList.add('hidden');
+                }
+            });
+        }
+
     });
 </script>
