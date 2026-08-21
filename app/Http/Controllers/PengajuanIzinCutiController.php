@@ -41,12 +41,14 @@ class PengajuanIzinCutiController
             'user_pengganti_id' => 'nullable|exists:users,id', // Diubah jadi nullable jika tidak selalu ada
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
-            'durasi' => 'required|string',
+            'durasi' => 'nullable|string',
             'keterangan' => 'required|string',
             'alamat_tempat' => 'required|string',
             'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
             'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
             'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
+            'jam_mulai' => 'required_if:kategori,izin|nullable|date_format:H:i',
+            'jam_selesai' => 'required_if:kategori,izin|nullable|date_format:H:i',
             'berkas_pendukung' => 'nullable|array', // Harus array
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240', // Validasi isi array
         ]);
@@ -58,7 +60,7 @@ class PengajuanIzinCutiController
         // 2. Siapkan data teks (kecuali file)
         $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
             'durasi', 'keterangan', 'alamat_tempat', 'jenis_cuti', 
-            'tanggal_mulai', 'tanggal_selesai']);
+            'tanggal_mulai', 'tanggal_selesai', 'jam_mulai', 'jam_selesai']);
 
         // array kosong untuk menampung nama-nama file
         $pathBerkas = [];
@@ -145,6 +147,8 @@ class PengajuanIzinCutiController
             'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
             'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
             'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
+            'jam_mulai' => 'required_if:kategori,izin|nullable|date_format:H:i',
+            'jam_selesai' => 'required_if:kategori,izin|nullable|date_format:H:i',
             'berkas_pendukung' => 'nullable|array',
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240',
         ]);
@@ -155,7 +159,7 @@ class PengajuanIzinCutiController
 
         $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
             'durasi', 'keterangan', 'alamat_tempat', 'jenis_cuti', 
-            'tanggal_mulai', 'tanggal_selesai']);
+            'tanggal_mulai', 'tanggal_selesai', 'jam_mulai', 'jam_selesai']);
 
         // Jika pegawai mengedit pengajuannya, kembalikan statusnya jadi 'pending' 
         // agar manajer tahu ada perubahan dan harus me-review ulang.

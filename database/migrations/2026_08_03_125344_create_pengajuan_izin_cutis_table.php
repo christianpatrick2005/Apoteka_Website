@@ -30,6 +30,8 @@ return new class extends Migration
             $table->enum('jenis_cuti', ['cuti_tahunan', 'cuti_kehamilan','lainnya'])->nullable();
             $table->date('tanggal_mulai')->nullable();
             $table->date('tanggal_selesai')->nullable();
+            $table->time('jam_mulai')->nullable();
+            $table->time('jam_selesai')->nullable();
             
             // Berkas dan validasi (nullable untuk mengakomodasi cuti tahunan vs cuti khusus)
             $table->json('berkas_pendukung')->nullable();

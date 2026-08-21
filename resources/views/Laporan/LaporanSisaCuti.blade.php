@@ -46,8 +46,8 @@
             
             <div class="mb-8 flex justify-between items-center">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900">Laporan Sisa Jatah Cuti</h1>
-                    <p class="mt-2 text-sm text-slate-500">Rekapitulasi sisa kuota cuti tahunan dan cuti kehamilan pegawai aktif.</p>
+                    <h1 class="text-3xl font-extrabold text-slate-900">Modul Laporan</h1>
+                    <p class="mt-2 text-sm text-slate-500">Rekapitulasi sisa kuota cuti tahunan dan cuti kehamilan pegawai aktif, dll.</p>
                 </div>
                 <!-- Tombol Print / Download (Opsional) -->
                 <button onclick="window.print()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer">
@@ -55,6 +55,8 @@
                     Cetak Laporan
                 </button>
             </div>
+
+            @include('partials.LaporanNav')
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="overflow-x-auto">

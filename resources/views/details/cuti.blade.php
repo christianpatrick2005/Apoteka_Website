@@ -64,8 +64,13 @@
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Rentang Waktu</dt>
                             <dd class="mt-1 text-sm text-gray-900">
-                                {{ $pengajuanIzinCuti->tanggal_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_mulai)->format('d M Y') : '-' }} s/d 
-                                {{ $pengajuanIzinCuti->tanggal_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_selesai)->format('d M Y') : '-' }}
+                                @if($pengajuanIzinCuti->kategori == 'izin')
+                                    {{ $pengajuanIzinCuti->jam_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->jam_mulai)->format('H:i') : '-' }} s/d 
+                                    {{ $pengajuanIzinCuti->jam_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->jam_selesai)->format('H:i') : '-' }} WIB
+                                @else
+                                    {{ $pengajuanIzinCuti->tanggal_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_mulai)->format('d M Y') : '-' }} s/d 
+                                    {{ $pengajuanIzinCuti->tanggal_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_selesai)->format('d M Y') : '-' }}
+                                @endif
                             </dd>
                         </div>
                         <div class="sm:col-span-1">

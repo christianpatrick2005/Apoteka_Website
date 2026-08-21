@@ -22,6 +22,8 @@ class PengajuanIzinCuti extends Model
         'jenis_cuti',
         'tanggal_mulai',
         'tanggal_selesai',
+        'jam_mulai',
+        'jam_selesai',
         'berkas_pendukung',
         'status_pengajuan',
         'status_pengganti',

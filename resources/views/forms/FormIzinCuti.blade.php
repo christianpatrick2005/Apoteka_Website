@@ -100,23 +100,34 @@
                                     <option value="cuti_kehamilan" {{ (old('jenis_cuti', $pengajuanIzinCuti->jenis_cuti ?? '') == 'cuti_kehamilan') ? 'selected' : '' }}>Melahirkan</option>
                                 </select>
                             </div>
+
+                            <div  class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="pilihanKategori === 'cuti'" x-transition>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tanggal Mulai <span class="text-red-500">*</span></label>
+                                    <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanggal_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_mulai)->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Tanggal Selesai <span class="text-red-500">*</span></label>
+                                    <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanggal_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_selesai)->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                </div>
+                            </div>
+
+                            <div  class="grid grid-cols-1 md:grid-cols-2 gap-4" x-show="pilihanKategori === 'izin'" x-transition>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Jam Mulai <span class="text-red-500">*</span></label>
+                                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->jam_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->jam_mulai)->format('H:i') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Jam Selesai <span class="text-red-500">*</span></label>
+                                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->jam_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->jam_selesai)->format('H:i') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                </div>
+                            </div>
                             
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tanggal Pengajuan <span class="text-red-500">*</span></label>
                             <input type="date" name="tanggal_pengajuan" required value="{{ old('tanggal_pengajuan', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanggal_pengajuan ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_pengajuan)->format('Y-m-d') : date('Y-m-d')) }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
-                                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanggal_mulai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_mulai)->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
-                                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai', isset($pengajuanIzinCuti) && $pengajuanIzinCuti->tanggal_selesai ? \Carbon\Carbon::parse($pengajuanIzinCuti->tanggal_selesai)->format('Y-m-d') : '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
-                            </div>
                         </div>
 
                         <div>
