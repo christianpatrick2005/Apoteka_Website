@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @media print {
+            @page {
+                /* size: landscape; */
+                margin: 1cm;
+            }
             /* 1. Sembunyikan Navbar, Footer, dan Tombol Print */
             nav, footer, button, .no-print {
                 display: none !important;
@@ -44,9 +48,12 @@
     <div class="flex-grow pt-24 pb-12">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             
+            <!-- Kop Surat (Hanya Tampil Saat Print) -->
+            @include('partials.KopSurat')
+
             <div class="mb-8 flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900">Modul Laporan</h1>
+                <div class="print:text-center print:w-full">
+                    <h1 class="text-3xl font-extrabold text-slate-900">Laporan Sisa Cuti Pegawai</h1>
                     <p class="mt-2 text-sm text-slate-500">Rekapitulasi sisa kuota cuti tahunan dan cuti kehamilan pegawai aktif, dll.</p>
                 </div>
                 <!-- Tombol Print / Download (Opsional) -->

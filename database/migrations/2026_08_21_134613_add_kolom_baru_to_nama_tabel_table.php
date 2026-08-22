@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
             $table->time('jam_mulai')->nullable();
             $table->time('jam_selesai')->nullable();
+            $table->decimal('geolocation')->nullable();
         });
     }
 

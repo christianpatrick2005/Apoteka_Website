@@ -186,6 +186,39 @@
                 @endif
             </div>
 
+            <!-- Form Import Excel -->
+            <form action="{{ route('jadwal.import') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-end bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                @csrf
+
+                @if(session('error'))
+                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                        <p class="text-sm text-red-700">{{ session('error') }}</p>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                        <ul class="list-disc list-inside text-sm text-red-700">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <div class="w-full sm:w-2/3">
+                    <label class="block text-xs font-semibold text-[#284fa0] mb-1">Import Jadwal Sebulan Penuh (Excel)</label>
+                    <p class="text-[10px] text-gray-500 mb-2">Pastikan file memiliki kolom: <strong>nama_user</strong>, <strong>nama_shift</strong>, dan <strong>tanggal</strong>.</p>
+                    <input type="file" name="file_excel" required accept=".xlsx,.xls,.csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#284fa0] file:text-white hover:file:bg-[#1e3b7a]">
+                </div>
+
+                <div class="w-full sm:w-1/3 flex gap-2">
+                    <button type="submit" class="w-full justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none">
+                        Unggah File
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
 

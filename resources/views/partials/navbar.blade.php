@@ -43,7 +43,7 @@
         <div class="flex justify-between h-20">
             <div class="flex items-center">
                 <a href="{{ route('MainPage') }}" class="flex items-center gap-2">
-                    <img class="w-35 h-20" fill="none" viewBox="0 0 24 24" src="{{ asset('images/logo_Apoteka.png') }}">
+                    <img class="w-45 h-20" fill="none" viewBox="0 0 24 24" src="{{ asset('images/Logo Apoteka - Bahagia Medifarma5.png') }}">
                 </a>
             </div>
             <div class="hidden md:flex items-center space-x-8">

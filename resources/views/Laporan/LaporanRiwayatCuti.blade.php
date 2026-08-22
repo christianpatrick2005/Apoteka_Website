@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         @media print {
+            @page {
+                size: landscape;
+                margin: 1cm;
+            }
             nav, footer, button, .no-print {
                 display: none !important;
             }
@@ -37,9 +41,12 @@
     <div class="flex-grow pt-24 pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
+            <!-- Kop Surat (Hanya Tampil Saat Print) -->
+            @include('partials.KopSurat')
+
             <div class="mb-8 flex justify-between items-center">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900">Modul Laporan</h1>
+                <div class="print:text-center print:w-full">
+                    <h1 class="text-3xl font-extrabold text-slate-900">Laporan Riwayat Cuti & Izin</h1>
                     <p class="mt-2 text-sm text-slate-500">Rekapitulasi riwayat pengajuan izin dan cuti pegawai.</p>
                 </div>
                 <button onclick="window.print()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer no-print">

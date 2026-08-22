@@ -32,6 +32,7 @@ return new class extends Migration
             $table->date('tanggal_selesai')->nullable();
             $table->time('jam_mulai')->nullable();
             $table->time('jam_selesai')->nullable();
+            $table->decimal('geolocation')->nullable();
             
             // Berkas dan validasi (nullable untuk mengakomodasi cuti tahunan vs cuti khusus)
             $table->json('berkas_pendukung')->nullable();

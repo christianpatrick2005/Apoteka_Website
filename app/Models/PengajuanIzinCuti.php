@@ -29,6 +29,7 @@ class PengajuanIzinCuti extends Model
         'status_pengganti',
         'tanggal_persetujuan',
         'komentar_manajer',
+        'geolocation',
     ];
 
     // Mengubah kolom tanggal menjadi format Date/Carbon

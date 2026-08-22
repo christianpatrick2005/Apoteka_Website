@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('dokumen', DokumenPegawaiController::class)->parameters(['dokumen' => 'dokumenPegawai']);
         Route::get('/laporan/sisa-cuti', [LaporanController::class, 'sisaCuti'])->name('laporan.sisa-cuti');
         Route::get('/laporan/riwayat-cuti', [LaporanController::class, 'riwayatCuti'])->name('laporan.riwayat-cuti');
+        Route::post('/jadwal/import', [JadwalPegawaiController::class, 'importExcel'])->name('jadwal.import');
     });
 
 
