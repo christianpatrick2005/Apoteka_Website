@@ -57,6 +57,52 @@
 
             @include('partials.LaporanNav')
 
+            <div class="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-100">
+                <form action="{{ route('laporan.riwayat-cuti') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+                    
+                    <!-- Filter Nama -->
+                    <div class="w-full md:w-1/4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Nama Pegawai</label>
+                        <input type="text" name="nama" value="{{ request('nama') }}" placeholder="Cari nama..." 
+                            class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0]">
+                    </div>
+
+                    <!-- Filter Kategori -->
+                    <div class="w-full md:w-1/4">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
+                        <select name="kategori" class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0] bg-white">
+                            <option value="">Semua Kategori</option>
+                            <option value="izin" {{ request('kategori') == 'izin' ? 'selected' : '' }}>Izin</option>
+                            <option value="cuti" {{ request('kategori') == 'cuti' ? 'selected' : '' }}>Cuti</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter Tanggal Mulai -->
+                    <div class="w-full md:w-1/5">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                        <input type="date" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}" 
+                            class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0]">
+                    </div>
+
+                    <!-- Filter Tanggal Selesai -->
+                    <div class="w-full md:w-1/5">
+                        <label class="block text-xs font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+                        <input type="date" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}" 
+                            class="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:ring-[#284fa0] focus:border-[#284fa0]">
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="w-full md:w-auto flex gap-2">
+                        <button type="submit" class="bg-[#284fa0] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-[#1e3b7a] transition-colors shadow-sm">
+                            Filter
+                        </button>
+                        <a href="{{ route('laporan.riwayat-cuti') }}" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-200 transition-colors border border-gray-200">
+                            Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
+
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">

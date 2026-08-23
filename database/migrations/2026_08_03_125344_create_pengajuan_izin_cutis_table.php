@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('tanggal_pengajuan');
             $table->string('durasi'); // Dalam format hari atau jam
             $table->text('keterangan');
-            $table->text('alamat_tempat');
+            // $table->text('alamat_tempat');
             // jenis cuti (Opsional - bisa ditambahkan jika diperlukan, misal: tahunan, sakit, khusus)
             $table->enum('jenis_cuti', ['cuti_tahunan', 'cuti_kehamilan','lainnya'])->nullable();
             $table->date('tanggal_mulai')->nullable();

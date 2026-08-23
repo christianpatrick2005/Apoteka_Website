@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            $table->time('jam_mulai')->nullable();
-            $table->time('jam_selesai')->nullable();
-            $table->decimal('geolocation')->nullable();
+            $table->dropColumn('alamat_tempat');
         });
     }
 
@@ -24,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            
+            //
         });
     }
 };

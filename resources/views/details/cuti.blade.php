@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </head>
 <body class="bg-gray-50 text-slate-800 antialiased selection:bg-[#fde402] selection:text-slate-900 min-h-screen flex flex-col font-['Inter']">
 
@@ -73,27 +77,54 @@
                                 @endif
                             </dd>
                         </div>
+
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Durasi</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $pengajuanIzinCuti->durasi }}</dd>
                         </div>
+
+                        <!-- Bagian Menampilkan Peta -->
+                        @if($pengajuanIzinCuti->geolocation)
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500 mb-2">Lokasi GPS Pegawai Saat Mengajukan</dt>
+                            <dd class="mt-1">
+                                <!-- Koordinat asli (disembunyikan untuk dibaca oleh Javascript nanti) -->
+                                <span id="koordinat-gps" class="hidden">{{ $pengajuanIzinCuti->geolocation }}</span>
+                                
+                                <!-- Kotak tempat peta akan dirender -->
+                                <div id="map" class="w-full h-64 rounded-lg border border-gray-300 shadow-sm z-0"></div>
+                                
+                                <a href="https://www.google.com/maps?q={{ str_replace(' ', '', $pengajuanIzinCuti->geolocation) }}" 
+                                target="_blank" 
+                                class="inline-block mt-2 text-xs font-medium text-[#284fa0] hover:text-[#1e3b7a] underline">
+                                Buka di Google Maps ↗
+                                </a>
+                            </dd>
+                        </div>
+                        @else
+                        <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Lokasi GPS Pegawai Saat Mengajukan</dt>
+                            <dd class="mt-1 text-sm text-gray-500 italic">Lokasi GPS tidak direkam / tidak tersedia.</dd>
+                        </div>
+                        @endif
+
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Keterangan</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $pengajuanIzinCuti->keterangan }}</dd>
                         </div>
-                        <div class="sm:col-span-2">
+                        <!-- <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500">Alamat Tempat / Lokasi</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $pengajuanIzinCuti->alamat_tempat }}</dd>
-                        </div>
+                        </div> -->
                         
-                        @if($pengajuanIzinCuti->tanda_tangan)
+                        <!-- @if($pengajuanIzinCuti->tanda_tangan)
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500 mb-2">Tanda Tangan Pemohon</dt>
                             <dd class="mt-1 text-sm text-gray-900">
                                 <img src="{{ asset('storage/' . $pengajuanIzinCuti->tanda_tangan) }}" alt="Tanda Tangan" class="max-h-32 object-contain border border-gray-200 rounded p-1">
                             </dd>
                         </div>
-                        @endif
+                        @endif -->
 
                         <div class="sm:col-span-2">
                             <dt class="text-sm font-medium text-gray-500 mb-2">Berkas Pendukung</dt>
@@ -148,6 +179,33 @@
 
     <!-- Footer -->
     @include('partials.footer')
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cek apakah elemen koordinat ada di halaman
+        const kordinatEl = document.getElementById('koordinat-gps');
+        
+        if (kordinatEl) {
+            // Memecah teks koordinat (contoh: "-7.250445, 112.768845") menjadi array
+            const koordinat = kordinatEl.textContent.split(',');
+            const lat = parseFloat(koordinat[0].trim());
+            const lng = parseFloat(koordinat[1].trim());
+
+            // 1. Inisialisasi peta dan arahkan ke koordinat tersebut dengan zoom level 15
+            const map = L.map('map').setView([lat, lng], 15);
+
+            // 2. Tambahkan layer gambar peta dari OpenStreetMap (Gratis)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // 3. Tambahkan pin/marker merah di titik koordinat
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('<b>Lokasi Pengajuan</b><br>Terekam dari GPS Pegawai.')
+                .openPopup();
+        }
+    });
+</script>
 
 </body>
 </html>
