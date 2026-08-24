@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Izin/Cuti - Apoteka</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/Logo Apoteka - Bahagia Medifarma2.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/Logo Apoteka - Bahagia Medifarma2.png') }}">
     @vite('resources/css/app.css')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,7 +53,8 @@
                     @php 
                         $users = \App\Models\User::all();
                     @endphp
-                    <form action="{{ isset($pengajuanIzinCuti) ? route('pengajuan-izin.update', $pengajuanIzinCuti->id) : route('pengajuan-izin.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <form action="{{ isset($pengajuanIzinCuti) ? route('pengajuan-izin.update', $pengajuanIzinCuti->id) : route('pengajuan-izin.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4"
+                    x-data="{ pilihanKategori: '{{ old('kategori', $pengajuanIzinCuti->kategori ?? 'izin') }}' }">
                         @csrf
                         @if(isset($pengajuanIzinCuti))
                             @method('PUT')
@@ -80,7 +83,7 @@
                         </div>
 
                         <!-- x-data untuk mendeteksi pilihan kategori secara real-time -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-data="{ pilihanKategori: '{{ old('kategori', $pengajuanIzinCuti->kategori ?? 'izin') }}' }">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Kategori <span class="text-red-500">*</span></label>
@@ -146,15 +149,17 @@
                         </div> -->
 
                         <!-- Input Geolocation (Disembunyikan dari layar) -->
-                        <input type="hidden" id="geolocation_input" name="geolocation">
+                        <div x-show="pilihanKategori === 'izin'" x-transition>
+                            <input type="hidden" id="geolocation_input" name="geolocation">
 
-                        <!-- Indikator Status Lokasi di Layar -->
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status Lokasi</label>
-                            <div class="flex items-center gap-2">
-                                <!-- Icon Loading (Bisa pakai SVG atau teks biasa) -->
-                                <span id="lokasi-icon" class="text-blue-500 animate-pulse">⏳</span>
-                                <p id="location-status" class="text-sm text-blue-600 font-medium">Mendeteksi lokasi Anda secara otomatis...</p>
+                            <!-- Indikator Status Lokasi di Layar -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status Lokasi</label>
+                                <div class="flex items-center gap-2">
+                                    <!-- Icon Loading (Bisa pakai SVG atau teks biasa) -->
+                                    <span id="lokasi-icon" class="text-blue-500 animate-pulse">⏳</span>
+                                    <p id="location-status" class="text-sm text-blue-600 font-medium">Mendeteksi lokasi Anda secara otomatis...</p>
+                                </div>
                             </div>
                         </div>
 
@@ -188,16 +193,15 @@
         const inputLocation = document.getElementById('geolocation_input');
         const statusText = document.getElementById('location-status');
         const statusIcon = document.getElementById('lokasi-icon');
-        
-        // BUG FIX: Anda lupa mendefinisikan btnSubmit sebelumnya!
         const btnSubmit = document.getElementById('submit-btn'); 
+
+        // 1. Simpan status lokasi dalam variabel global
+        let lokasiBerhasil = false;
 
         // Fungsi untuk melacak lokasi
         function autoGetLocation() {
             if (!navigator.geolocation) {
-                statusText.textContent = "Browser Anda tidak mendukung pelacakan lokasi.";
-                statusText.classList.replace('text-blue-600', 'text-red-500');
-                statusIcon.textContent = "❌";
+                updateStatusLokasiGagal("Browser Anda tidak mendukung pelacakan lokasi.");
                 return;
             }
 
@@ -207,56 +211,94 @@
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
                     
-                    // memasukkan data ke input hidden
                     inputLocation.value = latitude + ", " + longitude;
                     
-                    // update tampilan di layar
                     statusText.textContent = "Lokasi berhasil direkam.";
                     statusText.classList.replace('text-blue-600', 'text-emerald-600');
                     statusIcon.textContent = "✅";
                     statusIcon.classList.remove('animate-pulse');
 
-                    // Buka kunci tombol (Sekarang tidak akan error karena btnSubmit sudah didefinisikan)
-                    btnSubmit.disabled = false;
-                    btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+                    lokasiBerhasil = true; // Tandai bahwa lokasi berhasil didapat
+                    evaluasiTombolSubmit(); // Evaluasi tombol submit
                 },
                 // kalau gagal
                 function (error) {
-                    statusText.classList.replace('text-blue-600', 'text-red-500');
-                    statusIcon.textContent = "❌";
-                    statusIcon.classList.remove('animate-pulse');
-                    btnSubmit.disabled = true;
-                    
+                    let pesanError = "Terjadi kesalahan sistem saat melacak lokasi.";
                     switch(error.code) {
                         case error.PERMISSION_DENIED:
-                            statusText.textContent = "Akses lokasi ditolak oleh Anda. Mohon izinkan akses lokasi di browser.";
+                            pesanError = "Akses lokasi ditolak. Mohon izinkan akses lokasi.";
                             break;
                         case error.POSITION_UNAVAILABLE:
-                            statusText.textContent = "Informasi GPS tidak tersedia saat ini.";
+                            pesanError = "Informasi GPS tidak tersedia saat ini.";
                             break;
                         case error.TIMEOUT:
-                            statusText.textContent = "Waktu pelacakan lokasi habis (Timeout).";
-                            break;
-                        default:
-                            statusText.textContent = "Terjadi kesalahan sistem saat melacak lokasi.";
+                            pesanError = "Waktu pelacakan lokasi habis (Timeout).";
                             break;
                     }
+                    updateStatusLokasiGagal(pesanError);
                 },
                 {
                     // OPTIMASI KECEPATAN:
                     // Jika Anda ingin INSTAN, ubah enableHighAccuracy menjadi false. 
                     // (Lokasi akan diambil dari jaringan WiFi/Provider seluler, bukan satelit murni. Sangat cepat tapi akurasi bisa meleset 50-100 meter).
                     enableHighAccuracy: true, 
-                    
-                    timeout: 15000, // Beri waktu toleransi lebih lama (15 detik) untuk HP kentang
-                    
-                    // maximumAge: 60000 berarti browser diizinkan menggunakan lokasi yang tersimpan (cache) dalam 1 menit terakhir
-                    maximumAge: 60000 
+                    timeout: 15000,  // Beri waktu toleransi lebih lama (15 detik) untuk HP kentang
+                    maximumAge: 60000 // maximumAge: 60000 berarti browser diizinkan menggunakan lokasi yang tersimpan (cache) dalam 1 menit terakhir
                 }
             );
         }
 
-        // function akan langsung dijalankan saat halaman dibuka
+        // Fungsi pembantu untuk mengupdate UI jika gagal
+        function updateStatusLokasiGagal(pesan) {
+            statusText.textContent = pesan;
+            statusText.classList.replace('text-blue-600', 'text-red-500');
+            statusIcon.textContent = "❌";
+            statusIcon.classList.remove('animate-pulse');
+            
+            lokasiBerhasil = false;
+            evaluasiTombolSubmit();
+        }
+
+        // 2. Fungsi utama untuk mengevaluasi apakah tombol submit boleh ditekan
+        function evaluasiTombolSubmit() {
+            // Ambil nilai kategori saat ini dari Alpine.js
+            // Karena Alpine.js menggunakan x-model="pilihanKategori" pada elemen select, 
+            // kita bisa membacanya langsung dari nilai select tersebut.
+            const kategoriSelect = document.querySelector('select[name="kategori"]');
+            const kategoriSaatIni = kategoriSelect ? kategoriSelect.value : 'izin';
+
+            if (kategoriSaatIni === 'cuti') {
+                // Jika Cuti, tombol SELALU terbuka (lokasi tidak wajib)
+                bukaTombol();
+            } else {
+                // Jika Izin, tombol TERBUKA HANYA JIKA lokasi berhasil didapat
+                if (lokasiBerhasil) {
+                    bukaTombol();
+                } else {
+                    kunciTombol();
+                }
+            }
+        }
+
+        // Fungsi pembantu untuk membuka tombol
+        function bukaTombol() {
+            btnSubmit.disabled = false;
+            btnSubmit.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        // Fungsi pembantu untuk mengunci tombol
+        function kunciTombol() {
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+
+        // 3. Dengarkan perubahan pada dropdown Kategori (Alpine.js x-model akan memicu event 'change')
+        const kategoriSelectElement = document.querySelector('select[name="kategori"]');
+        if (kategoriSelectElement) {
+            kategoriSelectElement.addEventListener('change', evaluasiTombolSubmit);
+        }
+
+        // function langsung dijalankan saat halaman terbuka 
         autoGetLocation();
     });
 </script>

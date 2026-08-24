@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            $table->dropColumn('alamat_tempat');
             $table->string('geolocation')->nullable();
         });
     }

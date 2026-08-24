@@ -39,6 +39,8 @@ class PengajuanIzinCuti extends Model
         'tanggal_selesai' => 'date',
         'tanggal_persetujuan' => 'date',
         'berkas_pendukung' => 'array', //untuk array json
+        'jam_mulai' => 'datetime:H:i:s',
+        'jam_selesai' => 'datetime:H:i:s',
     ];
 
     public function user(): BelongsTo

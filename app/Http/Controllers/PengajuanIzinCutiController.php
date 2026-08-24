@@ -16,7 +16,18 @@ class PengajuanIzinCutiController
      */
     public function index()
     {
-        $data = PengajuanIzinCuti::with(['user', 'userPengganti'])->get();
+        $query = PengajuanIzinCuti::with(['user', 'userPengganti']);
+
+        if (auth()->check() && auth()->user()->role !== 'manajer') {
+            // Pegawai hanya bisa melihat pengajuannya sendiri, 
+            // atau pengajuan di mana dia ditunjuk sebagai pengganti.
+            $query->where(function ($q) {
+                $q->where('user_id', auth()->id())
+                  ->orWhere('user_pengganti_id', auth()->id());
+            });
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
 
         return view('ManageIzinCuti', compact('data'));
     }
@@ -51,7 +62,7 @@ class PengajuanIzinCutiController
             'jam_selesai' => 'required_if:kategori,izin|nullable|date_format:H:i',
             'berkas_pendukung' => 'nullable|array', // Harus array
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240', // Validasi isi array
-            'geolocation' => 'required|decimal',
+            'geolocation' => 'required_if:kategori,izin|nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -252,45 +263,44 @@ class PengajuanIzinCutiController
         // Ambil data pegawai yang mengajukan
         $user = $pengajuan->user;
 
-        // 2. SKENARIO A: Manajer menyetujui pengajuan (dan sebelumnya statusnya BUKAN disetujui)
-        if ($request->status_pengajuan === 'disetujui' && $pengajuan->status_pengajuan !== 'disetujui') {
-            
-            // Pastikan ini adalah kategori cuti (bukan izin biasa)
-            if ($pengajuan->kategori === 'cuti' && $pengajuan->tanggal_mulai && $pengajuan->tanggal_selesai) {
-                
-                // Hitung jumlah hari menggunakan Carbon (Tanggal Selesai - Tanggal Mulai + 1)
-                $tglMulai = \Carbon\Carbon::parse($pengajuan->tanggal_mulai);
-                $tglSelesai = \Carbon\Carbon::parse($pengajuan->tanggal_selesai);
-                $jumlahHari = $tglMulai->diffInDays($tglSelesai) + 1;
+        // Validasi: Jika manager mencoba menyetujui, pastikan pengganti (jika ada) sudah menyetujui
+        if ($request->status_pengajuan === 'disetujui') {
+            if ($pengajuan->user_pengganti_id && $pengajuan->status_pengganti !== 'disetujui') {
+                return back()->with('error', 'Persetujuan digagalkan! Pegawai pengganti belum menyetujui pengajuan ini.');
+            }
+        }
 
-                // Kurangi jatah berdasarkan jenis cuti
+        if ($pengajuan->status_pengganti === 'ditolak') {
+            $pengajuan->update([
+                'status_pengajuan' => 'ditolak',
+            ]);
+            return back()->with('error', 'Persetujuan digagalkan! Pegawai pengganti tidak menyetujui pengajuan ini.');
+        }
+
+        // logika POTONG JATAH CUTI & KEMBALIKAN JATAH CUTI
+        if ($pengajuan->kategori === 'cuti' && $pengajuan->tanggal_mulai && $pengajuan->tanggal_selesai) {
+            $tglMulai = \Carbon\Carbon::parse($pengajuan->tanggal_mulai);
+            $tglSelesai = \Carbon\Carbon::parse($pengajuan->tanggal_selesai);
+            $jumlahHari = $tglMulai->diffInDays($tglSelesai) + 1;
+
+            // Skenario A: Saat ini belum disetujui, lalu diubah menjadi DISETUJUI (Potong Cuti)
+            if ($pengajuan->status_pengajuan !== 'disetujui' && $request->status_pengajuan === 'disetujui') {
                 if ($pengajuan->jenis_cuti === 'cuti_tahunan') {
                     if ($user->jatah_cuti_tahunan < $jumlahHari) {
                         return back()->with('error', 'Persetujuan digagalkan! Sisa cuti tahunan pegawai (' . $user->jatah_cuti_tahunan . ' hari) tidak mencukupi untuk pengajuan ini (' . $jumlahHari . ' hari).');
                     }
                     $user->jatah_cuti_tahunan -= $jumlahHari;
                     $user->save();
-
                 } elseif ($pengajuan->jenis_cuti === 'cuti_kehamilan') {
                     if ($user->jatah_cuti_kehamilan < $jumlahHari) {
-                        return back()->with('error', 'Persetujuan digagalkan! Sisa cuti kehamilan pegawai (' . $user->jatah_cuti_kehamilan . ' hari) tidak mencukupi.');
+                        return back()->with('error', 'Persetujuan digagalkan! Sisa cuti kehamilan tidak mencukupi.');
                     }
                     $user->jatah_cuti_kehamilan -= $jumlahHari;
                     $user->save();
                 }
             }
-        }
-        
-        // 3. SKENARIO B: Manajer menolak pengajuan yang SEBELUMNYA sudah telanjur disetujui (Refund Jatah Cuti)
-        elseif ($request->status_pengajuan === 'ditolak' && $pengajuan->status_pengajuan === 'disetujui') {
-            
-            if ($pengajuan->kategori === 'cuti' && $pengajuan->tanggal_mulai && $pengajuan->tanggal_selesai) {
-                
-                $tglMulai = \Carbon\Carbon::parse($pengajuan->tanggal_mulai);
-                $tglSelesai = \Carbon\Carbon::parse($pengajuan->tanggal_selesai);
-                $jumlahHari = $tglMulai->diffInDays($tglSelesai) + 1;
-
-                // Kembalikan (tambahkan) jatah cuti yang sempat terpotong
+            // Skenario B: Saat ini sudah disetujui, lalu diubah menjadi DITOLAK atau PENDING (Kembalikan Cuti)
+            elseif ($pengajuan->status_pengajuan === 'disetujui' && ($statusTujuan === 'ditolak' || $statusTujuan === 'pending')) {
                 if ($pengajuan->jenis_cuti === 'cuti_tahunan') {
                     $user->jatah_cuti_tahunan += $jumlahHari;
                     $user->save();
