@@ -56,10 +56,12 @@
                         <a href="{{ route('pegawai.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Manage Data</a>
                         <a href="{{ route('pengajuan-izin.index') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Pengajuan Izin/Cuti</a>
                         <a href="{{ route('laporan.sisa-cuti') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Laporan</a>
+                        <a href="https://apotekabm.vmedis.com" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Vmedis</a>
                     @endif
 
                     @if(auth()->user()->role === 'pegawai')
                         <a href="{{ route('pengajuan-izin.create') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Ajukan Izin Cuti</a>
+                        <a href="https://apotekabm.vmedis.com" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Vmedis</a>
                     @endif
                 @endauth
             </div>
@@ -185,10 +187,12 @@
                     <a href="{{ route('pegawai.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Manage Data</a>
                     <a href="{{ route('pengajuan-izin.index') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Pengajuan Izin/Cuti</a>
                     <a href="{{ route('laporan.sisa-cuti') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Laporan</a>
+                    <a href="https://apotekabm.vmedis.com" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Vmedis</a>
                 @endif
 
                 @if(auth()->user()->role === 'pegawai')
                     <a href="{{ route('pengajuan-izin.create') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Ajukan Izin Cuti</a>
+                    <a href="https://apotekabm.vmedis.com" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Vmedis</a>
                 @endif
             @endauth
             

@@ -34,9 +34,9 @@ class AuthController
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');
 
-        return back()->withErrors([
-            'password' => 'Password yang Anda masukkan salah.',
-        ])->onlyInput('password');
+        // return back()->withErrors([
+        //     'password' => 'Password yang Anda masukkan salah.',
+        // ])->onlyInput('password');
     }
 
     // Memproses logout

@@ -2,9 +2,7 @@
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
             <div class="xl:grid xl:grid-cols-3 xl:gap-8">
                 <div class="space-y-8 xl:col-span-1">
-                    <a href="#" class="flex items-center gap-2 text-[#fde402] font-bold text-2xl tracking-tight">
-                        Apoteka
-                    </a>
+                    <img src="{{ asset('Images/Logo Apoteka - Bahagia Medifarma5.png') }}" alt="Logo Apoteka" class="w-50 h-25">
                     <p class="text-slate-400 text-base">
                         Solusi kesehatan terlengkap dan terpercaya untuk Anda dan keluarga.
                     </p>

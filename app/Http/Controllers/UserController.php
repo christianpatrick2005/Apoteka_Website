@@ -124,7 +124,7 @@ class UserController
         }
 
         // Ambil data yang divalidasi, KECUALI password
-        $data = $request->except(['password']);
+        $data = collect($validator->validated())->except(['password'])->toArray();
 
         // Jika form password diisi, maka enkripsi dan masukkan ke array data yang akan di-update
         // Jika dikosongkan, maka password lama tidak akan berubah

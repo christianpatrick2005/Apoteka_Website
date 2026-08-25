@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            $table->string('geolocation')->nullable();
-        });
+        // Dikosongkan agar tidak menyebabkan error "Duplicate column" saat di-hosting.
+        // Kolom geolocation sudah ada di migration awal.
     }
 
     /**
@@ -21,8 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            //
-        });
+        //
     }
 };

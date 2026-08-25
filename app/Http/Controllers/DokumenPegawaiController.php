@@ -137,7 +137,7 @@ class DokumenPegawaiController
     {
 
         // Hapus SEMUA file fisik yang terkait (Hanya memproses yang berupa file)
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa'];
+        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
         foreach ($fileFields as $field) {
             if ($dokumenPegawai->$field) {
                 Storage::disk('public')->delete($dokumenPegawai->$field);

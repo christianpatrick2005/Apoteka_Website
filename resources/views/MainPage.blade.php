@@ -37,16 +37,12 @@
                         <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div class="rounded-full shadow-md shadow-[#284fa0]/30">
                                 <a href="https://shopee.co.id/apoteka_bm#product_list" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-white bg-[#284fa0] hover:bg-[#1e3b7a] md:py-4 md:text-lg md:px-10 transition-all">
-                                    Pesan Obat
+                                    Pesan Obat & Lihat Produk
                                 </a>
                             </div>
+                            
                             <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="https://shopee.co.id/apoteka_bm#product_list" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#eb2128] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
-                                    Lihat Produk
-                                </a>
-                            </div>
-                            <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="https://wa.me/6285182238223?text=Halo%20Apoteka,%20saya%20ingin%20konsultasi" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#284fa0] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
+                                <a href="https://wa.me/6285182238223?text=Halo%20Apoteka,%20saya%20ingin%20konsultasi" class="w-full flex items-center justify-center px-8 py-3 border border-[#284fa0]/20 text-base font-medium rounded-full text-[#eb2128] bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10 transition-all">
                                     Konsultasi
                                 </a>
                             </div>
@@ -56,7 +52,7 @@
             </div>
         </div>
         <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-[#fde402] flex items-center justify-center">
-            <img class="relative z-10 h-56 w-full object-cover sm:h-72 md:h-96 lg:w-[85%] lg:h-[85%] rounded-3xl shadow-2xl lg:translate-x-8" src="https://images.unsplash.com/photo-1576602976047-174e57a47881?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Apoteker melayani pelanggan">
+            <img class="relative z-10 h-56 w-full object-cover sm:h-72 md:h-96 lg:w-[85%] lg:h-[85%] rounded-3xl shadow-2xl lg:translate-x-8" src="{{asset('images/TokoApoteka.webp')}}" alt="Apoteker melayani pelanggan">
         </div>
     </div>
 

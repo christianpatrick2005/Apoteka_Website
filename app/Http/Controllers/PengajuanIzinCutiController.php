@@ -153,7 +153,7 @@ class PengajuanIzinCutiController
             'user_pengganti_id' => 'nullable|exists:users,id',
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
-            'durasi' => 'required|string',
+            'durasi' => 'nullable|string',
             'keterangan' => 'required|string',
             // 'alamat_tempat' => 'required|string',
             'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
@@ -300,7 +300,7 @@ class PengajuanIzinCutiController
                 }
             }
             // Skenario B: Saat ini sudah disetujui, lalu diubah menjadi DITOLAK atau PENDING (Kembalikan Cuti)
-            elseif ($pengajuan->status_pengajuan === 'disetujui' && ($statusTujuan === 'ditolak' || $statusTujuan === 'pending')) {
+            elseif ($pengajuan->status_pengajuan === 'disetujui' && ($request->status_pengajuan === 'ditolak' || $request->status_pengajuan === 'pending')) {
                 if ($pengajuan->jenis_cuti === 'cuti_tahunan') {
                     $user->jatah_cuti_tahunan += $jumlahHari;
                     $user->save();

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            $table->time('jam_mulai')->nullable();
-            $table->time('jam_selesai')->nullable();
-            $table->decimal('geolocation')->nullable();
-        });
+        // Dikosongkan agar tidak menyebabkan error "Duplicate column" saat di-hosting.
+        // Kolom sudah ada di migration awal (2026_08_03_125344_create_pengajuan_izin_cutis_table.php)
     }
 
     /**
@@ -23,8 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('pengajuan_izin_cutis', function (Blueprint $table) {
-            
-        });
+        //
     }
 };
