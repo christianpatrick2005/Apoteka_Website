@@ -1,3 +1,51 @@
+<!-- OneSignal Web SDK -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(function(OneSignal) {
+    OneSignal.init({
+      appId: "8bc767f9-69d0-4ea5-9009-b69d87e999d7", 
+      notifyButton: {
+        enable: true, // Memunculkan tombol lonceng untuk berlangganan notifikasi
+      },
+      promptOptions: {
+          slidedown: {
+              prompts: [
+                  {
+                      type: "push",
+                      autoPrompt: true,
+                      text: {
+                          actionMessage: "Terima notifikasi untuk persetujuan cuti dan peringatan SIPA.",
+                          acceptButton: "Izinkan",
+                          cancelButton: "Nanti"
+                      }
+                  }
+              ]
+          }
+      }
+    });
+
+    OneSignal.User.PushSubscription.addEventListener("change", function(subscription) {
+        // Jika user mengklik "Allow"
+        if (subscription.current.optedIn) {
+            const osId = OneSignal.User.PushSubscription.id;
+            
+            // Kirim ID ke Laravel secara diam-diam (AJAX)
+            if (osId) {
+                fetch('/update-onesignal-id', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan ada tag meta csrf-token di head HTML Anda
+                    },
+                    body: JSON.stringify({ onesignal_id: osId })
+                }).then(response => console.log('OneSignal ID tersimpan!'));
+            }
+        }
+    });
+  });
+</script>
+
 @php
     $notifikasiPengganti = [];
     $notifikasiSipa = [];

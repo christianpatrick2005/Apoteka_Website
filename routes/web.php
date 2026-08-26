@@ -18,6 +18,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'authenticate']);
 });
 
+Route::post('/update-onesignal-id', function (\Illuminate\Http\Request $request) {
+    if (auth()->check()) {
+        auth()->user()->update(['onesignal_id' => $request->onesignal_id]);
+        return response()->json(['status' => 'success']);
+    }
+    return response()->json(['status' => 'unauthorized'], 401);
+});
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // HARUS LOGIN DULU
