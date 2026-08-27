@@ -27,7 +27,7 @@ class CekSipaKedaluwarsa extends Command
             if ($user && $user->onesignal_id) {
                 $tanggal = Carbon::parse($dokumen->tanggal_kadaluarsa_sipa)->format('d M Y');
 
-                Http::withHeaders([
+                $response = Http::withHeaders([
                     'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
                     'Content-Type' => 'application/json',
                 ])->post('https://onesignal.com/api/v1/notifications', [
@@ -42,9 +42,14 @@ class CekSipaKedaluwarsa extends Command
                         'id' => "⚠️ SIPA Hampir Habis"
                     ]
                 ]);
+
+                $this->info("Mengirim notif ke {$user->name} ({$user->onesignal_id}) -> Status: " . $response->status());
+                $this->info("Response OneSignal: " . $response->body());
+            } else {
+                $this->warn("User " . ($user ? $user->name : 'Unknown') . " tidak memiliki onesignal_id.");
             }
         }
 
-        $this->info('Pengecekan dan pengiriman notifikasi SIPA berhasil dijalankan.');
+        $this->info('Pengecekan dan pengiriman notifikasi SIPA selesai dijalankan.');
     }
 }

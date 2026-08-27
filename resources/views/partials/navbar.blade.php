@@ -2,8 +2,8 @@
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(function(OneSignal) {
-    OneSignal.init({
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
       appId: "8bc767f9-69d0-4ea5-9009-b69d87e999d7", 
       notifyButton: {
         enable: true, // Memunculkan tombol lonceng untuk berlangganan notifikasi
@@ -36,13 +36,44 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Pastikan ada tag meta csrf-token di head HTML Anda
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({ onesignal_id: osId })
-                }).then(response => console.log('OneSignal ID tersimpan!'));
+                })
+                .then(async response => {
+                    if (response.ok) {
+                        console.log('OneSignal ID tersimpan!');
+                    } else {
+                        console.error('Gagal menyimpan OneSignal ID:', response.status, await response.text());
+                    }
+                })
+                .catch(error => console.error('Error fetch OneSignal:', error));
             }
         }
     });
+
+    // Periksa status saat ini juga jika user sudah subscribe sebelumnya
+    if (OneSignal.User.PushSubscription.optedIn) {
+        const osId = OneSignal.User.PushSubscription.id;
+        if (osId) {
+            fetch('/update-onesignal-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ onesignal_id: osId })
+            })
+            .then(async response => {
+                if (response.ok) {
+                    console.log('OneSignal ID tersimpan dari state yang sudah ada!');
+                } else {
+                    console.error('Gagal menyimpan OneSignal ID:', response.status, await response.text());
+                }
+            })
+            .catch(error => console.error('Error fetch OneSignal:', error));
+        }
+    }
   });
 </script>
 

@@ -38,6 +38,7 @@ class User extends Authenticatable
         'role',
         'jatah_cuti_tahunan',
         'jatah_cuti_kehamilan',
+        'onesignal_id',
     ];
 
     /**
