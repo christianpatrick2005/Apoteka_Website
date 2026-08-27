@@ -14,6 +14,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gray-50 text-slate-800 antialiased selection:bg-[#fde402] selection:text-slate-900">
 
