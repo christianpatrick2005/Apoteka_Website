@@ -57,7 +57,7 @@
                         </div>
                     @endif
 
-                    <form id="form-pegawai" action="{{ isset($user) ? route('pegawai.update', $user->id) : route('pegawai.store') }}" method="POST">
+                    <form id="form-pegawai" action="{{ isset($user) ? route('pegawai.update', $user->id) : route('pegawai.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @if(isset($user))
                             @method('PUT')
@@ -151,6 +151,10 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Jatah Cuti Kehamilan</label>
                                 <input type="number" name="jatah_cuti_kehamilan" value="{{ old('jatah_cuti_kehamilan', $user->jatah_cuti_kehamilan ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Foto Profil</label>
+                                <input type="file" name="Foto_Profil" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
                         </div>
                     </form>

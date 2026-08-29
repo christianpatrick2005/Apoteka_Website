@@ -227,6 +227,17 @@
                             </div>
                         </div>
 
+                        <!-- Profil & Foto User Desktop --> 
+                        <div class="flex items-center gap-3">
+                            <img class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm" 
+                                    src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
+                                    alt="{{ auth()->user()->name }}">
+                            <div class="text-slate-600 font-medium">
+                                Halo, {{ auth()->user()->name }} 
+                                <span class="text-xs bg-[#284fa0] text-white px-2 py-1 rounded-full ml-1">{{ ucfirst(auth()->user()->role) }}</span>
+                            </div>
+                        </div>
+
                         <div class="text-slate-600 font-medium">
                             Halo, {{ auth()->user()->name }} 
                             <span class="text-xs bg-[#284fa0] text-white px-2 py-1 rounded-full ml-1">{{ ucfirst(auth()->user()->role) }}</span>
@@ -340,6 +351,16 @@
                         </div>
                     </div>
                 @endif
+
+                <!-- Profil & Foto User Mobile -->
+                <div class="flex items-center gap-3 px-3 py-2 mt-2 border-t border-gray-100 pt-4">
+                    <img class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm" 
+                         src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
+                         alt="{{ auth()->user()->name }}">
+                    <div class="text-slate-600 font-medium">
+                        Halo, {{ auth()->user()->name }} <span class="text-xs font-bold text-[#284fa0]">({{ ucfirst(auth()->user()->role) }})</span>
+                    </div>
+                </div>
 
                 <div class="block px-3 py-2 mt-2 text-slate-600 font-medium border-t border-gray-100 pt-4">
                     Halo, {{ auth()->user()->name }} <span class="text-xs font-bold text-[#284fa0]">({{ ucfirst(auth()->user()->role) }})</span>

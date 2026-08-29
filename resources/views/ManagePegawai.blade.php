@@ -57,7 +57,13 @@
                                 <!-- kolom nama pegawai -->
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="h-10 w-10 rounded-full bg-[#fde402] text-[#284fa0] flex items-center justify-center font-bold text-lg">AJ</div>
+                                        @if($user->Foto_Profil)
+                                            <div class="h-10 w-10 rounded-full bg-[#fde402] text-[#284fa0] flex items-center justify-center font-bold text-lg">
+                                                <img src="{{ asset('storage/' . $user->Foto_Profil) }}" alt="{{ $user->name }}">
+                                            </div>
+                                        @else
+                                            <div class="h-10 w-10 rounded-full bg-[#fde402] text-[#284fa0] flex items-center justify-center font-bold text-lg">AJ</div>
+                                        @endif
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $user->name ?? 'Pegawai Tidak Ditemukan' }}</div>
                                             <div class="text-sm text-gray-500">{{ $user->email ?? 'Email Tidak Ditemukan' }}</div>

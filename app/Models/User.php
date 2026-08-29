@@ -39,6 +39,7 @@ class User extends Authenticatable
         'jatah_cuti_tahunan',
         'jatah_cuti_kehamilan',
         'onesignal_id',
+        'Foto_Profil',
     ];
 
     /**

@@ -45,6 +45,18 @@
                 <div class="px-6 py-5">
                     <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
                         <div class="sm:col-span-1">
+                            <dt class="text-sm font-medium text-gray-500">Foto Profil</dt>
+                            @if($user->Foto_Profil)
+                            <div class="mt-1">
+                                <img src="{{ asset('storage/' . $user->Foto_Profil) }}" alt="{{ $user->name }}" class="h-32 w-auto rounded-lg shadow-sm border border-gray-200 object-cover">
+                            </div>
+                            @else
+                            <div class="mt-1">
+                                <dd class="text-sm text-gray-900">User Tidak Memiliki Foto Profil</dd>
+                            </div>
+                            @endif
+                        </div>
+                        <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Nama Lengkap</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $user->name }}</dd>
                         </div>

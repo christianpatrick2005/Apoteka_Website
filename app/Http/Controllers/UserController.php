@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Shift;
+use Illuminate\Support\Facades\Storage;
 
 class UserController
 {
@@ -55,6 +56,7 @@ class UserController
             'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
+            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -64,6 +66,13 @@ class UserController
         $data = $validator->validated();
         // Enkripsi password sebelum disimpan ke database
         $data['password'] = Hash::make($request->password);
+
+        if ($request->hasFile('Foto_Profil')) {
+            // Simpan foto ke folder storage/app/public/profil
+            $path = $request->file('Foto_Profil')->store('profil', 'public');
+            // Masukkan path string ke dalam array data untuk disimpan ke database
+            $data['Foto_Profil'] = $path;
+        }
 
         User::create($data);
 
@@ -117,6 +126,7 @@ class UserController
             'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
+            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -132,6 +142,17 @@ class UserController
             $data['password'] = Hash::make($request->password);
         }
 
+        if ($request->hasFile('Foto_Profil')) {
+            // 1. Cek apakah user sudah punya foto lama, jika ada hapus dari storage
+            if ($user->Foto_Profil && Storage::disk('public')->exists($user->Foto_Profil)) {
+                Storage::disk('public')->delete($user->Foto_Profil);
+            }
+            
+            // 2. Simpan foto yang baru
+            $path = $request->file('Foto_Profil')->store('profil', 'public');
+            $data['Foto_Profil'] = $path;
+        }
+
         $user->update($data);
 
         return back()->with('success', 'Data berhasil diperbarui');
@@ -142,9 +163,12 @@ class UserController
      */
     public function destroy(User $user)
     {
+        if ($user->Foto_Profil && Storage::disk('public')->exists($user->Foto_Profil)) {
+            Storage::disk('public')->delete($user->Foto_Profil);
+        }
+
         $user->delete();
         return back()->with('success', 'Data berhasil dihapus');
-
     }
 
     public function profilSaya()
