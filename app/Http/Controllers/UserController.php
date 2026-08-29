@@ -146,4 +146,19 @@ class UserController
         return back()->with('success', 'Data berhasil dihapus');
 
     }
+
+    public function profilSaya()
+    {
+        // Ambil data user yang sedang login
+        $user = auth()->user();
+        
+        // Load relasi yang dibutuhkan (persis seperti fungsi show)
+        $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
+
+        // Ambil daftar shift (jika view details.pegawai membutuhkannya)
+        $shifts = \App\Models\Shift::all(); 
+
+        // Gunakan view yang sudah ada!
+        return view('details.pegawai', compact('user', 'shifts'));
+    }
 }

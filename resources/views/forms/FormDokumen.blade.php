@@ -75,18 +75,26 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">File Ijasah</label>
-                            <input type="file" name="ijasah" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
-                            @if(isset($dokumenPegawai) && $dokumenPegawai->ijasah)
-                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->ijasah) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Ijasah</a></p>
+                            <label class="block text-sm font-medium text-gray-700">File Ijasah S1</label>
+                            <input type="file" name="ijazah_s1" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->ijazah_s1)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->ijazah_s1) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Ijasah S1</a></p>
+                            @endif
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">File Ijasah S2</label>
+                            <input type="file" name="ijazah_s2" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->ijazah_s2)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->ijazah_s2) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Ijasah S2</a></p>
                             @endif
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">File Transkrip</label>
-                            <input type="file" name="transkrip" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
-                            @if(isset($dokumenPegawai) && $dokumenPegawai->transkrip)
-                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->transkrip) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Transkrip</a></p>
+                            <label class="block text-sm font-medium text-gray-700">Dokumen Profesi</label>
+                            <input type="file" name="dokumen_profesi" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
+                            @if(isset($dokumenPegawai) && $dokumenPegawai->dokumen_profesi)
+                                <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->dokumen_profesi) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Dokumen Profesi</a></p>
                             @endif
                         </div>
                         
@@ -106,13 +114,13 @@
                             @endif
                         </div>
                         
-                        <div>
+                        <!-- <div>
                             <label class="block text-sm font-medium text-gray-700">Sertifikat Kompetensi</label>
                             <input type="file" name="sertifikat_kompetensi" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-[#284fa0]/10 file:text-[#284fa0] hover:file:bg-[#284fa0]/20">
                             @if(isset($dokumenPegawai) && $dokumenPegawai->sertifikat_kompetensi)
                                 <p class="text-xs text-gray-500 mt-1">File saat ini: <a href="{{ asset('storage/' . $dokumenPegawai->sertifikat_kompetensi) }}" target="_blank" class="text-blue-600 hover:underline">Lihat Sertifikat</a></p>
                             @endif
-                        </div>
+                        </div> -->
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700">File SIPA</label>

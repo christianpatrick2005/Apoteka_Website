@@ -9,39 +9,6 @@
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        @media print {
-            @page {
-                /* size: landscape; */
-                margin: 1cm;
-            }
-            /* 1. Sembunyikan Navbar, Footer, dan Tombol Print */
-            nav, footer, button, .no-print {
-                display: none !important;
-            }
-
-            /* 2. Bersihkan warna background halaman agar hemat tinta */
-            body {
-                background-color: white !important;
-                padding-top: 0 !important;
-            }
-
-            /* 3. Rapikan margin tabel dan hapus bayangan (shadow) */
-            .flex-grow {
-                padding-top: 0 !important;
-            }
-            .shadow-sm {
-                box-shadow: none !important;
-            }
-            .border {
-                border: 1px solid #000 !important; /* Buat garis tabel lebih tegas di kertas */
-            }
-            
-            /* 4. Pastikan warna tabel tetap muncul saat di-print */
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-    </style>
 
 </head>
 <body class="bg-gray-50 text-slate-800 antialiased font-['Inter'] min-h-screen flex flex-col">
@@ -50,20 +17,16 @@
 
     <div class="flex-grow pt-24 pb-12">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <!-- Kop Surat (Hanya Tampil Saat Print) -->
-            @include('partials.KopSurat')
 
             <div class="mb-8 flex justify-between items-center">
                 <div class="print:text-center print:w-full">
                     <h1 class="text-3xl font-extrabold text-slate-900">Laporan Sisa Cuti Pegawai</h1>
                     <p class="mt-2 text-sm text-slate-500">Rekapitulasi sisa kuota cuti tahunan dan cuti kehamilan pegawai aktif, dll.</p>
                 </div>
-                <!-- Tombol Print / Download (Opsional) -->
-                <button onclick="window.print()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                <a href="{{ route('laporan.sisa-cuti.pdf', request()->query()) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer no-print">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                     Cetak Laporan
-                </button>
+                </a>
             </div>
 
             @include('partials.LaporanNav')

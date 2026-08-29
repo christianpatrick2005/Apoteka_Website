@@ -38,6 +38,11 @@ Route::middleware(['auth'])->group(function () {
     // Rute resource pengajuan izin diletakkan di luar grup manajer/pegawai
     Route::resource('pengajuan-izin', PengajuanIzinCutiController::class)->parameters(['pengajuan-izin' => 'pengajuanIzinCuti']);
 
+    Route::middleware(['pegawai'])->group(function () {
+        // Pegawai bisa melihat profil, jadwal, dan sisa cutinya sendiri
+        Route::get('/profil-saya', [UserController::class, 'profilSaya'])->name('pegawai.profil-saya');
+    });
+    
     Route::middleware(['manajer'])->group(function () {
         Route::resource('pegawai', UserController::class)->parameters(['pegawai' => 'user']);
         Route::resource('shift', ShiftController::class);
@@ -45,6 +50,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('dokumen', DokumenPegawaiController::class)->parameters(['dokumen' => 'dokumenPegawai']);
         Route::get('/laporan/sisa-cuti', [LaporanController::class, 'sisaCuti'])->name('laporan.sisa-cuti');
         Route::get('/laporan/riwayat-cuti', [LaporanController::class, 'riwayatCuti'])->name('laporan.riwayat-cuti');
+        Route::get('/laporan/riwayat-cuti/pdf',[LaporanController::class, 'riwayatCutiPdf'])->name('laporan.riwayat-cuti.pdf');
+        Route::get('/laporan/sisa-cuti/pdf',[LaporanController::class, 'sisaCutiPdf'])->name('laporan.sisa-cuti.pdf');
+
         Route::post('/jadwal/import', [JadwalPegawaiController::class, 'importExcel'])->name('jadwal.import');
     });
 

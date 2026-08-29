@@ -65,30 +65,30 @@
                                 </li>
                                 @endif
 
-                                @if($dokumenPegawai->ijasah)
+                                @if($dokumenPegawai->ijazah_s1)
                                 <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                     <div class="w-0 flex-1 flex items-center">
                                         <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
                                         </svg>
-                                        <span class="ml-2 flex-1 w-0 truncate">Ijazah</span>
+                                        <span class="ml-2 flex-1 w-0 truncate">Ijazah S1</span>
                                     </div>
                                     <div class="ml-4 flex-shrink-0">
-                                        <a href="{{ asset('storage/' . $dokumenPegawai->ijasah) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
+                                        <a href="{{ asset('storage/' . $dokumenPegawai->ijazah_s1) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
                                     </div>
                                 </li>
                                 @endif
 
-                                @if($dokumenPegawai->transkrip)
+                                @if($dokumenPegawai->ijazah_s2)
                                 <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                     <div class="w-0 flex-1 flex items-center">
                                         <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
                                         </svg>
-                                        <span class="ml-2 flex-1 w-0 truncate">Transkrip</span>
+                                        <span class="ml-2 flex-1 w-0 truncate">Ijazah S2</span>
                                     </div>
                                     <div class="ml-4 flex-shrink-0">
-                                        <a href="{{ asset('storage/' . $dokumenPegawai->transkrip) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
+                                        <a href="{{ asset('storage/' . $dokumenPegawai->ijazah_s2) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
                                     </div>
                                 </li>
                                 @endif
@@ -107,16 +107,16 @@
                                 </li>
                                 @endif
 
-                                @if($dokumenPegawai->sertifikat_kompetensi)
+                                @if($dokumenPegawai->dokumen_profesi)
                                 <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
                                     <div class="w-0 flex-1 flex items-center">
                                         <svg class="flex-shrink-0 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
                                         </svg>
-                                        <span class="ml-2 flex-1 w-0 truncate">Sertifikat Kompetensi</span>
+                                        <span class="ml-2 flex-1 w-0 truncate">Dokumen Profesi</span>
                                     </div>
                                     <div class="ml-4 flex-shrink-0">
-                                        <a href="{{ asset('storage/' . $dokumenPegawai->sertifikat_kompetensi) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
+                                        <a href="{{ asset('storage/' . $dokumenPegawai->dokumen_profesi) }}" target="_blank" class="font-medium text-[#284fa0] hover:text-[#1e3b7a]">Lihat/Unduh</a>
                                     </div>
                                 </li>
                                 @endif
@@ -135,7 +135,7 @@
                                 </li>
                                 @endif
 
-                                @if(!$dokumenPegawai->ktp && !$dokumenPegawai->ijasah && !$dokumenPegawai->transkrip && !$dokumenPegawai->str && !$dokumenPegawai->sertifikat_kompetensi && !$dokumenPegawai->sipa)
+                                @if(!$dokumenPegawai->ktp && !$dokumenPegawai->ijazah_s1 && !$dokumenPegawai->ijazah_s2 && !$dokumenPegawai->str && !$dokumenPegawai->dokumen_profesi && !$dokumenPegawai->sipa)
                                 <li class="pl-3 pr-4 py-3 flex items-center justify-center text-sm text-gray-500">
                                     Tidak ada berkas yang diunggah
                                 </li>

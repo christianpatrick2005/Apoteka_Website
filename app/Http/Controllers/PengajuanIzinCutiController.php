@@ -94,34 +94,43 @@ class PengajuanIzinCutiController
             'berkas_pendukung' => !empty($pathBerkas) ? $pathBerkas : null,
         ]);
 
-        // 6. Kirim Notifikasi ke User Pengganti via OneSignal
-        if ($pengajuan->user_pengganti_id) {
-            $pengganti = User::find($pengajuan->user_pengganti_id);
-            if ($pengganti && $pengganti->onesignal_id) {
-                $pengaju = User::find($pengajuan->user_id);
-                $namaPengaju = $pengaju ? $pengaju->name : 'Seseorang';
-                
-                // Gunakan environment variable ONESIGNAL_REST_API_KEY dan ONESIGNAL_APP_ID
-                $apiKey = env('ONESIGNAL_REST_API_KEY', 'YOUR_REST_API_KEY');
-                $appId = env('ONESIGNAL_APP_ID', 'YOUR_APP_ID');
+        // 2. Ambil onesignal_id milik Pegawai Pengganti
+        $pengganti = User::find($request->user_pengganti_id);
+        $penggantiIds = ($pengganti && $pengganti->onesignal_id) ? [$pengganti->onesignal_id] : [];
 
-                Http::withHeaders([
-                    'Authorization' => 'Basic ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                ])->post('https://onesignal.com/api/v1/notifications', [
-                    'app_id' => $appId,
-                    'include_player_ids' => [$pengganti->onesignal_id],
-                    'contents' => [
-                        'en' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti.",
-                        'id' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti."
-                    ],
-                    'headings' => [
-                        'en' => "Butuh Persetujuan Cuti",
-                        'id' => "Butuh Persetujuan Cuti"
-                    ]
-                ]);
-            }
+        // 3. Ambil semua onesignal_id milik Manajer
+        $manajerIds = User::where('role', 'manajer')
+            ->whereNotNull('onesignal_id')
+            ->pluck('onesignal_id')
+            ->toArray();
+
+        // 4. Gabungkan ID Pengganti dan Manajer, lalu hapus duplikat (jika ada)
+        $targetIds = array_unique(array_merge($penggantiIds, $manajerIds));
+
+        // 5. Tembak API OneSignal jika ada minimal 1 penerima
+        if (!empty($targetIds)) {
+            $namaPemohon = auth()->user()->name;
+            $pesan = "{$namaPemohon} mengajukan cuti/izin baru. Mohon segera dicek dan diproses.";
+
+            Http::withHeaders([
+                'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+                'Content-Type' => 'application/json',
+            ])->post('https://onesignal.com/api/v1/notifications', [
+                'app_id' => env('ONESIGNAL_APP_ID'),
+                'include_player_ids' => array_values($targetIds),
+                'contents' => [
+                    'en' => $pesan,
+                    'id' => $pesan
+                ],
+                'headings' => [
+                    'en' => "🔔 Pengajuan Cuti Baru",
+                    'id' => "🔔 Pengajuan Cuti Baru"
+                ],
+                // Opsional: Jika mau pakai logo
+                // 'chrome_web_icon' => asset('images/Logo Apoteka - Bahagia Medifarma5.png') 
+            ]);
         }
+        
 
         return back()->with('success', 'Pengajuan berhasil dikirim!');
     }

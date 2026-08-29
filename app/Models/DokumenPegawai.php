@@ -12,11 +12,11 @@ class DokumenPegawai extends Model
 
     protected $fillable = [
         'user_id',
-        'ijasah',
-        'transkrip',
+        'ijazah_s1',
+        'ijazah_s2',
         'ktp',
         'str',
-        'sertifikat_kompetensi',
+        'dokumen_profesi',
         'sipa',
         'tanggal_kadaluarsa_sipa',
     ];

@@ -9,33 +9,7 @@
     @vite('resources/css/app.css')
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <style>
-        @media print {
-            @page {
-                size: landscape;
-                margin: 1cm;
-            }
-            nav, footer, button, .no-print {
-                display: none !important;
-            }
-            body {
-                background-color: white !important;
-                padding-top: 0 !important;
-            }
-            .flex-grow {
-                padding-top: 0 !important;
-            }
-            .shadow-sm {
-                box-shadow: none !important;
-            }
-            .border {
-                border: 1px solid #000 !important;
-            }
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-        
-    </style>
+
 </head>
 <body class="bg-gray-50 text-slate-800 antialiased font-['Inter'] min-h-screen flex flex-col">
 
@@ -43,24 +17,26 @@
 
     <div class="flex-grow pt-24 pb-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            
-            <!-- Kop Surat (Hanya Tampil Saat Print) -->
-            @include('partials.KopSurat')
+        
 
             <div class="mb-8 flex justify-between items-center">
                 <div class="print:text-center print:w-full">
                     <h1 class="text-3xl font-extrabold text-slate-900">Laporan Riwayat Cuti & Izin</h1>
                     <p class="mt-2 text-sm text-slate-500">Rekapitulasi riwayat pengajuan izin dan cuti pegawai.</p>
                 </div>
-                <button onclick="window.print()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer no-print">
+                <a href="{{ route('laporan.riwayat-cuti.pdf', request()->query()) }}" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer no-print">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Cetak Laporan
+                </a>
+                <!-- <button onclick="window.print()" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors cursor-pointer no-print">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     Cetak Laporan
-                </button>
+                </button> -->
             </div>
 
             @include('partials.LaporanNav')
 
-            <div class="bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-100">
+            <div class="no-print bg-white p-4 rounded-lg shadow-sm mb-6 border border-gray-100">
                 <form action="{{ route('laporan.riwayat-cuti') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
                     
                     <!-- Filter Nama -->
@@ -117,6 +93,7 @@
                                 <th scope="col" class="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider">Durasi & Tgl</th>
                                 <th scope="col" class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">Status Pengganti</th>
                                 <th scope="col" class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">Status Akhir</th>
+                                <th scope="col" class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider">Keterangan</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -182,6 +159,9 @@
                                         <span class="text-gray-500">-</span>
                                     @endif
                                 </td>
+                                <td class="text-center px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    {{ $item->keterangan ?? 'Tidak ada data' }}
+                                </td>
                             </tr>
                             @empty
                             <tr>
@@ -197,5 +177,25 @@
     </div>
 
     @include('partials.footer')
+
+    <!-- <script>
+        // Event listener ini akan berjalan tepat sebelum jendela print terbuka
+        window.addEventListener('beforeprint', () => {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            };
+            // Format ke bahasa Indonesia (id-ID)
+            const formattedDate = now.toLocaleDateString('id-ID', options);
+            document.getElementById('waktu-cetak').innerText = formattedDate;
+        });
+    </script> -->
+
 </body>
 </html>

@@ -27,9 +27,15 @@
                     <h1 class="text-3xl font-extrabold text-slate-900">Detail Pegawai</h1>
                     <p class="mt-2 text-sm text-slate-500">Informasi lengkap data pegawai.</p>
                 </div>
+                @if(auth()->user()->role === 'manajer')
                 <a href="{{ route('pegawai.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors">
                     Kembali
                 </a>
+                @else
+                <a href="{{ route('MainPage') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors">
+                    Kembali
+                </a>
+                @endif
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -107,6 +113,7 @@
                 <h3 class="text-lg leading-6 font-semibold text-slate-900">Jadwal Shift</h3>
             </div>
 
+            @if(auth()->user()->role === 'manajer')
             <div class="px-6 py-4 bg-white border-b border-gray-100">
                     <form action="{{ route('jadwal.store') }}" method="POST" class="flex flex-col sm:flex-row gap-4 items-end">
                         @csrf
@@ -135,6 +142,7 @@
                         </div>
                     </form>
                 </div>
+            @endif
 
             <div class="p-0 overflow-x-auto">
                 <!-- Mengecek apakah pegawai ini punya jadwal atau belum -->
@@ -163,6 +171,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <!-- Tombol Hapus -->
+                                        @if(auth()->user()->role === 'manajer')
                                         <form action="{{ route('jadwal.destroy', $jadwal->id) }}" method="POST" onsubmit="return confirm('Hapus jadwal ini?');" class="inline">
                                             @csrf
                                             @method('DELETE')
@@ -172,6 +181,7 @@
                                                 </svg>
                                             </button>
                                         </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -189,6 +199,7 @@
                 @endif
             </div>
 
+            @if(auth()->user()->role === 'manajer')
             <!-- Form Import Excel -->
             <form action="{{ route('jadwal.import') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-end bg-blue-50/50 p-4 rounded-lg border border-blue-100">
                 @csrf
@@ -221,6 +232,7 @@
                     </button>
                 </div>
             </form>
+            @endif
 
         </div>
     </div>

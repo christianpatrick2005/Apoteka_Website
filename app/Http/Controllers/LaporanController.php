@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\PengajuanIzinCuti;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController
 {
@@ -54,5 +55,90 @@ class LaporanController
         $riwayat = $query->get();
 
         return view('Laporan.LaporanRiwayatCuti', compact('riwayat'));
+    }
+
+    public function riwayatCutiPdf(Request $request)
+    {
+        $query = PengajuanIzinCuti::with([
+            'user',
+            'userPengganti'
+        ])->latest('tanggal_pengajuan');
+        // FILTER NAMA
+        if ($request->filled('nama')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where(
+                    'name',
+                    'like',
+                    '%' . $request->nama . '%'
+                );
+            });
+        }
+
+        // FILTER KATEGORI
+        if ($request->filled('kategori')) {
+            $query->where(
+                'kategori',
+                $request->kategori
+            );
+        }
+
+        // FILTER TANGGAL
+        if (
+            $request->filled('tanggal_mulai') &&
+            $request->filled('tanggal_selesai')
+        ) {
+            $query->whereBetween(
+                'tanggal_pengajuan',
+                [
+                    $request->tanggal_mulai,
+                    $request->tanggal_selesai
+                ]
+            );
+        }
+        elseif ($request->filled('tanggal_mulai')) {
+            $query->where(
+                'tanggal_pengajuan',
+                '>=',
+                $request->tanggal_mulai
+            );
+        }
+        elseif ($request->filled('tanggal_selesai')) {
+            $query->where(
+                'tanggal_pengajuan',
+                '<=',
+                $request->tanggal_selesai
+            );
+        }
+
+        $riwayat = $query->get();
+
+        // BUAT PDF
+        $pdf = Pdf::loadView(
+            'Laporan.LaporanRiwayatCutiPdf',
+            compact('riwayat')
+        );
+
+        // A4 LANDSCAPE
+        $pdf->setPaper(
+            'a4',
+            'landscape'
+        );
+
+        return $pdf->stream(
+            'laporan-riwayat-cuti.pdf'
+        );
+    }
+
+    public function sisaCutiPdf(Request $request)
+    {
+        // Ambil data pegawai dengan EAGER LOADING untuk efisiensi
+        $dataPegawai = User::where('role', 'pegawai')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $pdf = Pdf::loadView('Laporan.LaporanSisaCutiPdf', compact('dataPegawai'));
+        $pdf->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan-sisa-cuti.pdf');
     }
 }

@@ -141,6 +141,7 @@
                     @if(auth()->user()->role === 'pegawai')
                         <a href="{{ route('pengajuan-izin.create') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Ajukan Izin Cuti</a>
                         <a href="https://apotekabm.vmedis.com" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Vmedis</a>
+                        <a href="{{ route('pegawai.profil-saya') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Profil & Jadwal Saya</a>
                     @endif
                 @endauth
             </div>
@@ -272,6 +273,7 @@
                 @if(auth()->user()->role === 'pegawai')
                     <a href="{{ route('pengajuan-izin.create') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Ajukan Izin Cuti</a>
                     <a href="https://apotekabm.vmedis.com" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Vmedis</a>
+                    <a href="{{ route('pegawai.profil-saya') }}" class="block px-3 py-2 text-slate-600 hover:text-[#eb2128] hover:bg-slate-50 rounded-md font-medium transition-colors">Profil & Jadwal Saya</a>
                 @endif
             @endauth
             

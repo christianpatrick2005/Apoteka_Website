@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 class DokumenPegawaiController
 {
@@ -36,11 +37,11 @@ class DokumenPegawaiController
         // 1. Validasi input dari form HTML
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'transkrip' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'ijazah_s2' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'ktp'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'ijasah'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'ijazah_s1'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'str'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'sertifikat_kompetensi' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'dokumen_profesi' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'sipa' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'tanggal_kadaluarsa_sipa' => 'nullable|date',
         ]);
@@ -54,7 +55,7 @@ class DokumenPegawaiController
         $data = $request->only(['user_id', 'tanggal_kadaluarsa_sipa']);
 
         // 3. Proses upload masing-masing file
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
+        $fileFields = ['ktp', 'ijazah_s1','ijazah_s2','str','dokumen_profesi','sipa'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('uploads/dokumen', 'public');
@@ -97,10 +98,10 @@ class DokumenPegawaiController
         $validator = Validator::make($request->all(), [
             'user_id' => 'sometimes|exists:users,id',
             'ktp'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'transkrip' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'ijasah'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'ijazah_s1'  => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'ijazah_s2' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'str'     => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'sertifikat_kompetensi' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'dokumen_profesi' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'sipa' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'tanggal_kadaluarsa_sipa' => 'nullable|date',
         ]);
@@ -113,7 +114,7 @@ class DokumenPegawaiController
         $data = $request->only(['user_id', 'tanggal_kadaluarsa_sipa']);
 
         // Cek dan timpa file lama dengan file baru jika ada
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
+        $fileFields = ['ktp', 'ijazah_s1', 'ijazah_s2', 'str', 'dokumen_profesi', 'sipa'];
         foreach ($fileFields as $field) {
             if ($request->hasFile($field)) {
                 // Hapus file fisik lama di folder storage agar tidak menumpuk
@@ -127,6 +128,72 @@ class DokumenPegawaiController
 
         $dokumenPegawai->update($data);
 
+        // Panggil relasi user agar kita tahu ini dokumen milik siapa
+        $pemilikDokumen = $dokumenPegawai->user ?? User::find($dokumenPegawai->user_id);
+        
+        if ($pemilikDokumen) {
+            // 1. Ambil ID OneSignal Pemilik Dokumen
+            $pemilikId = $pemilikDokumen->onesignal_id ? [$pemilikDokumen->onesignal_id] : [];
+
+            // 2. Ambil semua ID OneSignal Manajer
+            $manajerIds = User::where('role', 'manajer')
+                ->whereNotNull('onesignal_id')
+                ->pluck('onesignal_id')
+                ->toArray();
+
+            // 3. Gabungkan ID pemilik & manajer, lalu hapus jika ada ID yang duplikat
+            $targetIds = array_unique(array_merge($pemilikId, $manajerIds));
+
+            // 4. Kirimkan notifikasi jika ada minimal 1 penerima
+            if (!empty($targetIds)) {
+                
+                // CEK APAKAH TANGGAL SIPA IKUT DIUBAH/DIISI
+                if ($request->filled('tanggal_kadaluarsa_sipa')) {
+                    
+                    // 1. Ubah inputan menjadi format tanggal Carbon
+                    $tanggalInput = \Carbon\Carbon::parse($request->tanggal_kadaluarsa_sipa);
+                    // 2. Hitung batas waktu 6 bulan dari sekarang
+                    $batasWaktu = \Carbon\Carbon::now()->addMonths(6);
+                    
+                    $tanggalCantik = $tanggalInput->translatedFormat('d M Y');
+                    $pengubah = auth()->check() ? auth()->user()->name : 'Sistem';
+
+                    // 3. Bandingkan! Apakah kurang dari 6 bulan?
+                    if ($tanggalInput->lessThanOrEqualTo($batasWaktu)) {
+                        // KONDISI A: Benar-benar hampir habis (< 6 bulan)
+                        $pesan = "Peringatan SIPA: Dokumen SIPA milik {$pemilikDokumen->name} akan kedaluwarsa pada {$tanggalCantik}.";
+                        $judul = "⚠️ SIPA Hampir Habis";
+                    } else {
+                        // KONDISI B: Tanggal diubah, tapi masa aktifnya masih lama / aman
+                        $pesan = "Masa aktif SIPA milik {$pemilikDokumen->name} telah diperpanjang hingga {$tanggalCantik} oleh {$pengubah}.";
+                        $judul = "✅ SIPA Diperbarui";
+                    }
+
+                } else {
+                    // KONDISI C: Jika tanggal SIPA tidak diubah sama sekali (cuma ubah KTP/Ijazah)
+                    $pengubah = auth()->check() ? auth()->user()->name : 'Sistem';
+                    $pesan = "Data dokumen kepegawaian (KTP, Ijazah, dll) milik {$pemilikDokumen->name} telah diperbarui oleh {$pengubah}.";
+                    $judul = "📁 Dokumen Diperbarui";
+                }
+
+                Http::withHeaders([
+                    'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+                    'Content-Type' => 'application/json',
+                ])->post('https://onesignal.com/api/v1/notifications', [
+                    'app_id' => env('ONESIGNAL_APP_ID'),
+                    'include_player_ids' => array_values($targetIds),
+                    'contents' => [
+                        'en' => $pesan,
+                        'id' => $pesan
+                    ],
+                    'headings' => [
+                        'en' => $judul,
+                        'id' => $judul
+                    ]
+                ]);
+            }
+        }
+
         return back()->with('success', 'Dokumen pegawai berhasil diperbarui');
     }
 
@@ -137,7 +204,7 @@ class DokumenPegawaiController
     {
 
         // Hapus SEMUA file fisik yang terkait (Hanya memproses yang berupa file)
-        $fileFields = ['ktp', 'ijasah', 'str', 'sertifikat_kompetensi', 'sipa', 'transkrip'];
+        $fileFields = ['ktp', 'ijazah_s1', 'ijazah_s2', 'str', 'dokumen_profesi', 'sipa'];
         foreach ($fileFields as $field) {
             if ($dokumenPegawai->$field) {
                 Storage::disk('public')->delete($dokumenPegawai->$field);
