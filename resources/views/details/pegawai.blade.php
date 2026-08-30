@@ -121,8 +121,22 @@
             </div>
 
             <div class="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50">
+            <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
                 <h3 class="text-lg leading-6 font-semibold text-slate-900">Jadwal Shift</h3>
+                
+                <!-- Tombol Hapus Semua Jadwal -->
+                @if(auth()->user()->role === 'manajer' && $user->jadwalPegawai && $user->jadwalPegawai->count() > 0)
+                    <form action="{{ route('jadwal.destroyAll', $user->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus SEMUA jadwal untuk pegawai ini? Tindakan ini tidak dapat dibatalkan.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="inline-flex items-center justify-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 shadow-sm transition-colors">
+                            <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Hapus Semua Jadwal
+                        </button>
+                    </form>
+                @endif
             </div>
 
             @if(auth()->user()->role === 'manajer')
@@ -212,9 +226,37 @@
             </div>
 
             @if(auth()->user()->role === 'manajer')
+
+            <div class="mb-5 mt-5">
+                <label class="block text-xs font-semibold text-[#284fa0] mb-1">Template Excel</label>
+                    <a href="{{ route('jadwal-pegawai.template.download') }}" class="inline-flex items-center justify-center px-4 py-2 bg-[#284fa0] text-white text-sm font-medium rounded-md hover:bg-[#1e3b7a] transition-colors shadow-sm w-full">
+                        Unduh Template
+                    </a>
+            </div>
+
             <!-- Form Import Excel -->
             <form action="{{ route('jadwal.import') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row gap-4 items-end bg-blue-50/50 p-4 rounded-lg border border-blue-100">
                 @csrf
+
+                @if(session('success'))
+                    <div class="mb-4 bg-green-50 border-l-4 border-green-400 p-4 rounded-md">
+                        <p class="text-sm text-green-700">{{ session('success') }}</p>
+                    </div>
+                @endif
+
+                @if(session('warning'))
+                    <div class="mb-4 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+                        <p class="text-sm text-yellow-700">{{ session('warning') }}</p>
+
+                        @if(session('import_errors') && count(session('import_errors')) > 0)
+                            <ul class="list-disc list-inside text-xs text-yellow-700 mt-2 max-h-40 overflow-y-auto">
+                                @foreach(session('import_errors') as $err)
+                                    <li>{{ $err }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                @endif
 
                 @if(session('error'))
                     <div class="mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
@@ -234,7 +276,7 @@
 
                 <div class="w-full sm:w-2/3">
                     <label class="block text-xs font-semibold text-[#284fa0] mb-1">Import Jadwal Sebulan Penuh (Excel)</label>
-                    <p class="text-[10px] text-gray-500 mb-2">Pastikan file memiliki kolom: <strong>nama_user</strong>, <strong>nama_shift</strong>, dan <strong>tanggal</strong>.</p>
+                    <p class="text-[10px] text-gray-500 mb-2">Pastikan file sesuai dengan template yang ditentukan.</p>
                     <input type="file" name="file_excel" required accept=".xlsx,.xls,.csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-[#284fa0] file:text-white hover:file:bg-[#1e3b7a]">
                 </div>
 

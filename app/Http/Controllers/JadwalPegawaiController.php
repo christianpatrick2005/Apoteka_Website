@@ -10,9 +10,16 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Spatie\SimpleExcel\SimpleExcelReader;
 use Carbon\Carbon;
+use App\Exports\TemplateJadwalExport;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class JadwalPegawaiController
 {
+    private const FIRST_DATE_COL_INDEX = 6; // F
+    private const FIRST_DATA_ROW = 9;
+    
     /**
      * Display a listing of the resource.
      */
@@ -100,49 +107,148 @@ class JadwalPegawaiController
         return back()->with('success', 'Data dan file jadwal pegawai berhasil dihapus secara permanen');
     }
 
-    public function importExcel(Request $request)
+    public function destroyAll($user_id)
     {
-        // 1. Validasi file
+        // Menghapus semua jadwal yang memiliki user_id tersebut
+        JadwalPegawai::where('user_id', $user_id)->delete();
+
+        return back()->with('success', 'Semua jadwal untuk pegawai tersebut berhasil dihapus secara permanen.');
+    }
+
+    public function downloadTemplateJadwal(Request $request)
+    {
         $request->validate([
-            'file_excel' => 'required|mimes:xlsx,xls,csv'
+            'start' => 'nullable|date',
+            'end' => 'nullable|date|after_or_equal:start',
         ]);
 
+        $start = $request->query('start')
+            ? Carbon::parse($request->query('start'))->startOfDay()
+            : now()->startOfMonth();
+
+        $end = $request->query('end')
+            ? Carbon::parse($request->query('end'))->startOfDay()
+            : $start->copy()->endOfMonth();
+
+        $filename = sprintf(
+            'Template_Upload_Jadwal_Shift_%s_-_%s.xlsx',
+            $start->format('d_M_Y'),
+            $end->format('d_M_Y')
+        );
+
+        return Excel::download(new TemplateJadwalExport($start, $end), $filename);
+    }
+
+    /**
+     * Import jadwal dari template wide/matrix (satu kolom per tanggal).
+     * Ini MENGGANTI importExcel lama, karena template lama (format panjang:
+     * kolom nama_pegawai / nama_shift / tanggal per baris) sudah tidak
+     * cocok dengan struktur template baru.
+     */
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|mimes:xlsx,xls',
+        ]);
+
+        $path = $request->file('file_excel')->getRealPath();
+
         try {
-            // 2. Baca file Excel menggunakan Spatie
-            // $rows = SimpleExcelReader::create($request->file('file_excel')->path())->getRows();
-            
-            // 2. Baca file Excel menggunakan Spatie (dengan memberitahu ekstensi aslinya)
-            $file = $request->file('file_excel');
-            $rows = SimpleExcelReader::create($file->path(), $file->getClientOriginalExtension())->getRows();
+            $spreadsheet = IOFactory::load($path);
+            $sheet = $spreadsheet->getSheetByName('Jadwal Shift Karyawan');
 
-            // 3. Looping setiap baris di Excel
-            $rows->each(function(array $row) {
-                // Sekarang kita mengecek berdasarkan kolom 'nama_pegawai' dan nama shift
-                if (empty($row['nama_pegawai']) || empty($row['nama_shift'])) return;
+            if (!$sheet) {
+                return back()->with('error', 'Sheet "Jadwal Shift Karyawan" tidak ditemukan di file yang diupload. Pastikan Anda mengupload file hasil download template.');
+            }
 
-                // Cari data pegawai dan shift berdasarkan namanya
-                $pegawai = User::where('name', $row['nama_pegawai'])->first();
-                $shift = Shift::where('nama_shift', $row['nama_shift'])->first();
+            // Ambil tanggal mulai periode dari sel C4, contoh isinya:
+            // "1 September 2026 - 30 September 2026"
+            $periodRaw = trim((string) $sheet->getCell('C4')->getValue());
+            $parts = array_map('trim', explode('-', $periodRaw, 2));
 
-                // Jika nama tidak ditemukan di database, lewati baris ini agar tidak error
-                if (!$pegawai || !$shift) return;
+            if (empty($parts[0])) {
+                return back()->with('error', 'Sel periode (C4) kosong atau formatnya berubah. Jangan mengubah struktur header template.');
+            }
 
-                // Spatie sangat pintar: jika sel Excel diformat sebagai tanggal, 
-                // ia otomatis merubahnya menjadi objek DateTime. Jika tidak, kita parse manual.
-                $tanggal = $row['tanggal'] instanceof \DateTimeInterface 
-                    ? $row['tanggal']->format('Y-m-d') 
-                    : Carbon::parse($row['tanggal'])->format('Y-m-d');
+            $startDate = Carbon::parse($parts[0]);
 
-                //4. Masukkan ke database
-                \App\Models\JadwalPegawai::create([
-                    'user_id'  => $pegawai->id, // Ambil ID dari hasil pencarian nama
-                    'shift_id' => $shift->id,
-                    'tanggal'  => $tanggal,
-                ]);
-            });
+            $highestRow = $sheet->getHighestDataRow();
+            $highestColIndex = Coordinate::columnIndexFromString($sheet->getHighestDataColumn());
 
-            return back()->with('success', 'Jadwal shift sebulan berhasil ditambahkan');
-            
+            $imported = 0;
+            $dihapus = 0;
+            $dilewati = 0;
+            $errors = [];
+
+            for ($row = self::FIRST_DATA_ROW; $row <= $highestRow; $row++) {
+                $nomorKtp = trim((string) $sheet->getCell("C{$row}")->getValue());
+                $namaPegawai = trim((string) $sheet->getCell("D{$row}")->getValue());
+
+                if ($nomorKtp === '' && $namaPegawai === '') {
+                    continue; // baris kosong, lewati
+                }
+
+                $pegawai = User::where('name', $namaPegawai)->first();
+
+                if (!$pegawai && $nomorKtp !== '') {
+                    $pegawai = User::where('nomor_ktp', $nomorKtp)->first();
+                }
+
+                if (!$pegawai) {
+                    $dilewati++;
+                    $errors[] = "Baris {$row}: pegawai '{$namaPegawai}' (KTP: {$nomorKtp}) tidak ditemukan di database.";
+                    continue;
+                }
+
+                for ($col = self::FIRST_DATE_COL_INDEX; $col <= $highestColIndex; $col++) {
+                    $colLetter = Coordinate::stringFromColumnIndex($col);
+                    $cellValue = trim((string) $sheet->getCell("{$colLetter}{$row}")->getValue());
+
+                    if ($cellValue === '') {
+                        continue; // sel dikosongkan, tidak diubah
+                    }
+
+                    $tanggal = $startDate->copy()
+                        ->addDays($col - self::FIRST_DATE_COL_INDEX)
+                        ->format('Y-m-d');
+
+                    // "Day Off" -> hapus jadwal shift yg mungkin sudah ada di tanggal itu
+                    if (strcasecmp($cellValue, 'Day Off') === 0) {
+                        $hapus = JadwalPegawai::where('user_id', $pegawai->id)
+                            ->where('tanggal', $tanggal)
+                            ->delete();
+                        $dihapus += $hapus;
+                        continue;
+                    }
+
+                    // Format dropdown: "Security Pagi || 07:00 - 19:00 || 15m"
+                    // Ambil bagian nama shift saja (sebelum "||")
+                    $namaShift = trim(explode('||', $cellValue)[0]);
+                    $shift = Shift::where('nama_shift', $namaShift)->first();
+
+                    if (!$shift) {
+                        $dilewati++;
+                        $errors[] = "Baris {$row}, kolom {$colLetter}: shift '{$namaShift}' tidak ditemukan di database.";
+                        continue;
+                    }
+
+                    JadwalPegawai::updateOrCreate(
+                        ['user_id' => $pegawai->id, 'tanggal' => $tanggal],
+                        ['shift_id' => $shift->id]
+                    );
+
+                    $imported++;
+                }
+            }
+
+            $message = "Import selesai: {$imported} jadwal disimpan, {$dihapus} ditandai Day Off.";
+            if ($dilewati > 0) {
+                $message .= " {$dilewati} sel dilewati karena data tidak cocok.";
+            }
+
+            return back()->with($dilewati > 0 ? 'warning' : 'success', $message)
+                ->with('import_errors', $errors);
+
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan sistem: ' . $e->getMessage());
         }

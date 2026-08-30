@@ -230,7 +230,7 @@
                         <!-- Profil & Foto User Desktop --> 
                         <div class="flex items-center gap-3">
                             <img class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm" 
-                                    src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
+                                    src="{{ auth()->user()->Foto_Profil ? asset('storage/' . auth()->user()->Foto_Profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
                                     alt="{{ auth()->user()->name }}">
                             <div class="text-slate-600 font-medium">
                                 Halo, {{ auth()->user()->name }} 
@@ -238,10 +238,10 @@
                             </div>
                         </div>
 
-                        <div class="text-slate-600 font-medium">
+                        <!-- <div class="text-slate-600 font-medium">
                             Halo, {{ auth()->user()->name }} 
                             <span class="text-xs bg-[#284fa0] text-white px-2 py-1 rounded-full ml-1">{{ ucfirst(auth()->user()->role) }}</span>
-                        </div>
+                        </div> -->
                         <form action="{{ route('logout') }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" class="bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 px-4 py-2 rounded-full font-medium transition-all shadow-sm">
@@ -355,16 +355,16 @@
                 <!-- Profil & Foto User Mobile -->
                 <div class="flex items-center gap-3 px-3 py-2 mt-2 border-t border-gray-100 pt-4">
                     <img class="w-9 h-9 rounded-full object-cover border border-gray-200 shadow-sm" 
-                         src="{{ auth()->user()->foto_profil ? asset('storage/' . auth()->user()->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
+                         src="{{ auth()->user()->Foto_Profil ? asset('storage/' . auth()->user()->Foto_Profil) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=284fa0&color=fff' }}" 
                          alt="{{ auth()->user()->name }}">
                     <div class="text-slate-600 font-medium">
                         Halo, {{ auth()->user()->name }} <span class="text-xs font-bold text-[#284fa0]">({{ ucfirst(auth()->user()->role) }})</span>
                     </div>
                 </div>
 
-                <div class="block px-3 py-2 mt-2 text-slate-600 font-medium border-t border-gray-100 pt-4">
+                <!-- <div class="block px-3 py-2 mt-2 text-slate-600 font-medium border-t border-gray-100 pt-4">
                     Halo, {{ auth()->user()->name }} <span class="text-xs font-bold text-[#284fa0]">({{ ucfirst(auth()->user()->role) }})</span>
-                </div>
+                </div> -->
                 <form action="{{ route('logout') }}" method="POST" class="block w-full mt-2">
                     @csrf
                     <button type="submit" class="w-full px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 rounded-md font-medium transition-colors text-center">

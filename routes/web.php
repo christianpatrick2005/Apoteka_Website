@@ -44,6 +44,8 @@ Route::middleware(['auth'])->group(function () {
     });
     
     Route::middleware(['manajer'])->group(function () {
+        Route::delete('/jadwal/destroy-all/{user_id}', [JadwalPegawaiController::class, 'destroyAll'])->name('jadwal.destroyAll');
+        Route::get('/jadwal-pegawai-template/download', [JadwalPegawaiController::class, 'downloadTemplateJadwal'])->name('jadwal-pegawai.template.download');
         Route::resource('pegawai', UserController::class)->parameters(['pegawai' => 'user']);
         Route::resource('shift', ShiftController::class);
         Route::resource('jadwal', JadwalPegawaiController::class)->parameters(['jadwal' => 'jadwalPegawai']);
@@ -54,11 +56,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan/sisa-cuti/pdf',[LaporanController::class, 'sisaCutiPdf'])->name('laporan.sisa-cuti.pdf');
 
         Route::post('/jadwal/import', [JadwalPegawaiController::class, 'importExcel'])->name('jadwal.import');
-    });
-
-
-    Route::middleware(['pegawai'])->group(function () {
-        // Kosongkan sementara jika belum ada halaman yang murni HANYA untuk pegawai
     });
 
 });
