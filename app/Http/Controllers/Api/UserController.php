@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController
 {
@@ -13,14 +15,12 @@ class UserController
      */
     public function index()
     {
-        // 1. Ambil data dari database MySQL (termasuk relasinya)
-        $data = User::with(['dokumenPegawai', 'pengajuanCuti', 'jadwalPegawai'])->get();
+        $data = User::with(['dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti'])->get();
 
-        // 2. Kembalikan respons dalam struktur JSON yang rapi
         return response()->json([
-            'status' => 'success',
-            'pesan' => 'Data user berhasil dimuat',
-            'data' => $data
+            'status'  => 'success',
+            'message' => 'Daftar pegawai berhasil diambil.',
+            'data'    => $data
         ], 200);
     }
 
@@ -29,169 +29,185 @@ class UserController
      */
     public function store(Request $request)
     {
-        // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'alamat_surabaya' => 'required|string|max:255',
-            'alamat_asal' => 'required|string|max:255',
-            'nomor_hp' => 'required|string|max:255',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required',
-            'agama' => 'required|string|max:255',
-            'status_pernikahan' => 'required|in:Menikah,Belum Menikah',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'posisi' => 'required|string|max:255',
-            'gaji' => 'required|numeric',
-            'nomor_ktp' => 'required|string|max:255',
-            'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manajer,pegawai',
-            'jatah_cuti' => 'required|integer',
+            'name'                 => 'required|string|max:255',
+            'email'                => 'required|email|unique:users,email',
+            'password'             => 'required',
+            'alamat_surabaya'      => 'required|string|max:255',
+            'alamat_asal'          => 'required|string|max:255',
+            'nomor_hp'             => 'required|string|max:255',
+            'tempat_lahir'         => 'required|string|max:255',
+            'tanggal_lahir'        => 'required|date',
+            'agama'                => 'required|string|max:255',
+            'status_pernikahan'    => 'required|in:Menikah,Belum Menikah',
+            'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
+            'posisi'               => 'required|string|max:255',
+            'gaji'                 => 'required|numeric',
+            'nomor_ktp'            => 'required|string|numeric|digits:16',
+            'kewarganegaraan'       => 'required|string|max:255',
+            'role'                 => 'required|in:manajer,pegawai',
+            'jatah_cuti_tahunan'   => 'required|integer',
+            'jatah_cuti_kehamilan' => 'required|integer',
+            'Foto_Profil'          => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        // 2. Simpan ke database (Langsung ambil data yang dibutuhkan)
-        $user = User::create($request->only(['name', 'email', 'password', 'alamat_surabaya', 'alamat_asal', 'nomor_hp', 'tempat_lahir', 'tanggal_lahir', 'agama', 'status_pernikahan', 'jenis_kelamin', 'posisi', 'gaji', 'nomor_ktp', 'kewarganegaraan', 'role', 'jatah_cuti']));
+        $data = $validator->validated();
+        $data['password'] = Hash::make($request->password);
+
+        if ($request->hasFile('Foto_Profil')) {
+            $path = $request->file('Foto_Profil')->store('profil', 'public');
+            $data['Foto_Profil'] = $path;
+        }
+
+        $user = User::create($data);
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data user berhasil ditambahkan',
-            'data'   => $user
+            'status'  => 'success',
+            'message' => 'Data pegawai berhasil ditambahkan.',
+            'data'    => $user
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data user tidak ditemukan'
-            ], 404);
-        }
+        $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Detail user berhasil dimuat',
-            'data'   => $user
+            'status'  => 'success',
+            'message' => 'Detail pegawai berhasil diambil.',
+            'data'    => $user
         ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data user tidak ditemukan'
-            ], 404);
-        }
-
-        // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'alamat_surabaya' => 'required|string|max:255',
-            'alamat_asal' => 'required|string|max:255',
-            'nomor_hp' => 'required|string|max:255',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required',
-            'agama' => 'required|string|max:255',
-            'status_pernikahan' => 'required|in:Menikah,Belum Menikah',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'posisi' => 'required|string|max:255',
-            'gaji' => 'required|numeric',
-            'nomor_ktp' => 'required|string|max:255',
-            'kewarganegaraan' => 'required|string|max:255',
-            'role' => 'required|in:manajer,pegawai',
-            'jatah_cuti' => 'required|integer',
+            'name'                 => 'required|string|max:255',
+            'email'                => 'required|email|unique:users,email,' . $user->id,
+            'password'             => 'nullable',
+            'alamat_surabaya'      => 'required|string|max:255',
+            'alamat_asal'          => 'required|string|max:255',
+            'nomor_hp'             => 'required|string|max:255',
+            'tempat_lahir'         => 'required|string|max:255',
+            'tanggal_lahir'        => 'required|date',
+            'agama'                => 'required|string|max:255',
+            'status_pernikahan'    => 'required|in:Menikah,Belum Menikah',
+            'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
+            'posisi'               => 'required|string|max:255',
+            'gaji'                 => 'required|numeric',
+            'nomor_ktp'            => 'required|string|numeric|digits:16',
+            'kewarganegaraan'       => 'required|string|max:255',
+            'role'                 => 'required|in:manajer,pegawai',
+            'jatah_cuti_tahunan'   => 'required|integer',
+            'jatah_cuti_kehamilan' => 'required|integer',
+            'Foto_Profil'          => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $user->update($request->only(['name', 'email', 'password', 'alamat_surabaya', 'alamat_asal', 'nomor_hp', 'tempat_lahir', 'tanggal_lahir', 'agama', 'status_pernikahan', 'jenis_kelamin', 'posisi', 'gaji', 'nomor_ktp', 'kewarganegaraan', 'role', 'jatah_cuti']));
+        $data = collect($validator->validated())->except(['password'])->toArray();
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('Foto_Profil')) {
+            if ($user->Foto_Profil && Storage::disk('public')->exists($user->Foto_Profil)) {
+                Storage::disk('public')->delete($user->Foto_Profil);
+            }
+            
+            $path = $request->file('Foto_Profil')->store('profil', 'public');
+            $data['Foto_Profil'] = $path;
+        }
+
+        $user->update($data);
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data user berhasil diperbarui',
-            'data'   => $user
+            'status'  => 'success',
+            'message' => 'Data pegawai berhasil diperbarui.',
+            'data'    => $user
         ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data user tidak ditemukan'
-            ], 404);
+        if ($user->Foto_Profil && Storage::disk('public')->exists($user->Foto_Profil)) {
+            Storage::disk('public')->delete($user->Foto_Profil);
         }
 
         $user->delete();
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data user berhasil dihapus secara permanen'
+            'status'  => 'success',
+            'message' => 'Data pegawai berhasil dihapus.'
         ], 200);
     }
 
-    public function updateOneSignalId(Request $request, string $id)
+    public function profilSaya()
     {
-        $user = User::find($id);
+        $user = auth()->user();
+        $user->load('dokumenPegawai', 'jadwalPegawai', 'pengajuanCuti');
 
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data user tidak ditemukan'
-            ], 404);
-        }
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Profil saya berhasil diambil.',
+            'data'    => $user
+        ], 200);
+    }
+
+    public function updateProfilSaya(Request $request)
+    {
+        $user = auth()->user();
 
         $validator = Validator::make($request->all(), [
-            'onesignal_id' => 'required|string',
+            'Foto_Profil' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Validasi gagal.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $user->onesignal_id = $request->onesignal_id;
-        $user->save();
+        if ($request->hasFile('Foto_Profil')) {
+            if ($user->Foto_Profil && Storage::disk('public')->exists($user->Foto_Profil)) {
+                Storage::disk('public')->delete($user->Foto_Profil);
+            }
+
+            $path = $request->file('Foto_Profil')->store('foto_profil', 'public');
+            $user->Foto_Profil = $path;
+            $user->save();
+        }
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'OneSignal ID berhasil disimpan'
+            'status'  => 'success',
+            'message' => 'Foto profil berhasil diperbarui.',
+            'data'    => $user
         ], 200);
     }
 }

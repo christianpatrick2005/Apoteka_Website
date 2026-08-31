@@ -55,6 +55,14 @@
                                 <dd class="text-sm text-gray-900">User Tidak Memiliki Foto Profil</dd>
                             </div>
                             @endif
+                            @if(auth()->user()->role === 'pegawai')
+                            <form action="{{ route('pegawai.update-profil-saya') }}" method="post" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <input type="file" name="Foto_Profil" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
+                                <button type="submit" class="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-[#284fa0] hover:bg-[#284fa0] shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#284fa0]">Upload</button>
+                            </form>
+                            @endif
                         </div>
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Nama Lengkap</dt>
@@ -96,11 +104,11 @@
                             <dt class="text-sm font-medium text-gray-500">Status Pernikahan</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $user->status_pernikahan }}</dd>
                         </div>
-                        <div class="sm:col-span-2">
+                        <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Alamat Surabaya</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $user->alamat_surabaya }}</dd>
                         </div>
-                        <div class="sm:col-span-2">
+                        <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Alamat Asal</dt>
                             <dd class="mt-1 text-sm text-gray-900">{{ $user->alamat_asal }}</dd>
                         </div>
@@ -227,10 +235,9 @@
 
             @if(auth()->user()->role === 'manajer')
 
-            <div class="mb-5 mt-5">
-                <label class="block text-xs font-semibold text-[#284fa0] mb-1">Template Excel</label>
+            <div class="mb-5 mt-5 flex gap-4 items-end bg-blue-50/50 p-4 rounded-lg border border-blue-100">
                     <a href="{{ route('jadwal-pegawai.template.download') }}" class="inline-flex items-center justify-center px-4 py-2 bg-[#284fa0] text-white text-sm font-medium rounded-md hover:bg-[#1e3b7a] transition-colors shadow-sm w-full">
-                        Unduh Template
+                        Unduh Template Excel
                     </a>
             </div>
 

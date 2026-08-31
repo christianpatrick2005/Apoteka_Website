@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Models\Shift;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 
 class ShiftController
 {
@@ -14,14 +13,12 @@ class ShiftController
      */
     public function index()
     {
-        // 1. Ambil data dari database MySQL (termasuk relasinya)
         $data = Shift::with(['jadwalPegawai'])->get();
 
-        // 2. Kembalikan respons dalam struktur JSON yang rapi
         return response()->json([
-            'status' => 'success',
-            'pesan' => 'Data shift berhasil dimuat',
-            'data' => $data
+            'status'  => 'success',
+            'message' => 'Daftar shift berhasil diambil.',
+            'data'    => $data
         ], 200);
     }
 
@@ -30,109 +27,81 @@ class ShiftController
      */
     public function store(Request $request)
     {
-        // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
             'nama_shift' => 'required|string|max:255',
-            'jam_masuk' => 'required|date_format:H:i:s',
-            'jam_keluar' => 'required|date_format:H:i:s',
+            'jam_masuk'  => 'required|date_format:H:i',
+            'jam_keluar' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        // 2. Simpan ke database (Langsung ambil data yang dibutuhkan)
-        $shift = Shift::create($request->only(['nama_shift', 'jam_masuk', 'jam_keluar']));
+        $shift = Shift::create($validator->validated());
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data shift berhasil ditambahkan',
-            'data'   => $shift
+            'status'  => 'success',
+            'message' => 'Data shift berhasil ditambahkan.',
+            'data'    => $shift
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Shift $shift)
     {
-        $shift = Shift::find($id);
-
-        if (!$shift) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data shift tidak ditemukan'
-            ], 404);
-        }
+        $shift->load('jadwalPegawai');
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Detail izin cuti berhasil dimuat',
-            'data'   => $shift
+            'status'  => 'success',
+            'message' => 'Detail shift berhasil diambil.',
+            'data'    => $shift
         ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Shift $shift)
     {
-        $shift = Shift::find($id);
-
-        if (!$shift) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data shift tidak ditemukan'
-            ], 404);
-        }
-
-        // 1. Validasi input dari mobile
         $validator = Validator::make($request->all(), [
             'nama_shift' => 'required|string|max:255',
-            'jam_masuk' => 'required|date_format:H:i:s',
-            'jam_keluar' => 'required|date_format:H:i:s',
+            'jam_masuk'  => 'required|date_format:H:i',
+            'jam_keluar' => 'required|date_format:H:i',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $shift->update($request->only(['nama_shift', 'jam_masuk', 'jam_keluar']));
+        $shift->update($validator->validated());
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data shift berhasil diperbarui',
-            'data'   => $shift
+            'status'  => 'success',
+            'message' => 'Data shift berhasil diubah.',
+            'data'    => $shift
         ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Shift $shift)
     {
-        $shift = Shift::find($id);
-
-        if (!$shift) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data shift tidak ditemukan'
-            ], 404);
-        }
-
         $shift->delete();
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data shift berhasil dihapus secara permanen'
+            'status'  => 'success',
+            'message' => 'Data shift berhasil dihapus.'
         ], 200);
     }
 }

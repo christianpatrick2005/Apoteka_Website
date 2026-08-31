@@ -139,9 +139,9 @@
                     @endif
 
                     @if(auth()->user()->role === 'pegawai')
-                        <a href="{{ route('pengajuan-izin.create') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Ajukan Izin Cuti</a>
+                        <a href="{{ route('pengajuan-izin.create') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Ajukan Izin/Cuti</a>
                         <a href="https://apotekabm.vmedis.com" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Vmedis</a>
-                        <a href="{{ route('pegawai.profil-saya') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Profil & Jadwal Saya</a>
+                        <a href="{{ route('pegawai.profil-saya') }}" class="text-slate-600 hover:text-[#eb2128] font-medium transition-colors">Profil & Jadwal</a>
                     @endif
                 @endauth
             </div>

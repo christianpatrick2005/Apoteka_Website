@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['pegawai'])->group(function () {
         // Pegawai bisa melihat profil, jadwal, dan sisa cutinya sendiri
         Route::get('/profil-saya', [UserController::class, 'profilSaya'])->name('pegawai.profil-saya');
+        Route::put('/profil-saya/update', [UserController::class, 'updateProfilSaya'])->name('pegawai.update-profil-saya');
     });
     
     Route::middleware(['manajer'])->group(function () {

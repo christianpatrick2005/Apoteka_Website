@@ -59,7 +59,7 @@
                                     <div class="flex items-center">
                                         @if($user->Foto_Profil)
                                             <div class="h-10 w-10 rounded-full bg-[#fde402] text-[#284fa0] flex items-center justify-center font-bold text-lg">
-                                                <img src="{{ asset('storage/' . $user->Foto_Profil) }}" alt="{{ $user->name }}">
+                                                <img class="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm" src="{{ asset('storage/' . $user->Foto_Profil) }}" alt="{{ $user->name }}">
                                             </div>
                                         @else
                                             <div class="h-10 w-10 rounded-full bg-[#fde402] text-[#284fa0] flex items-center justify-center font-bold text-lg">AJ</div>

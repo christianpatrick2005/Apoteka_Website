@@ -221,7 +221,7 @@ class JadwalPegawaiController
                         continue;
                     }
 
-                    // Format dropdown: "Security Pagi || 07:00 - 19:00 || 15m"
+                    // Format dropdown: "Security Pagi || 07:00 - 19:00"
                     // Ambil bagian nama shift saja (sebelum "||")
                     $namaShift = trim(explode('||', $cellValue)[0]);
                     $shift = Shift::where('nama_shift', $namaShift)->first();

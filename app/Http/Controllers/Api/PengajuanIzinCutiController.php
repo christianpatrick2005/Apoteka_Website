@@ -2,26 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\PengajuanIzinCuti;
-use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 
-class PengajuanIzinCutiController
+class PengajuanIzinCutiController 
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = PengajuanIzinCuti::with(['user', 'userPengganti'])->get();
+        $query = PengajuanIzinCuti::with(['user', 'userPengganti']);
+
+        if (auth()->check() && auth()->user()->role !== 'manajer') {
+            $query->where(function ($q) {
+                $q->where('user_id', auth()->id())
+                  ->orWhere('user_pengganti_id', auth()->id());
+            });
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
-            'status' => 'success',
-            'pesan' => 'Data pengajuan berhasil dimuat',
-            'data' => $data
+            'status'  => 'success',
+            'message' => 'Daftar pengajuan izin/cuti berhasil diambil.',
+            'data'    => $data
         ], 200);
     }
 
@@ -30,169 +39,137 @@ class PengajuanIzinCutiController
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input (Perhatikan validasi array untuk berkas_pendukung)
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'user_pengganti_id' => 'nullable|exists:users,id', // Diubah jadi nullable jika tidak selalu ada
+            'user_pengganti_id' => 'nullable|exists:users,id',
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
-            'durasi' => 'required|string',
+            'durasi' => 'nullable|string',
             'keterangan' => 'required|string',
-            'alamat_tempat' => 'required|string',
-            'jenis' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
-            'tanda_tangan' => 'nullable|file|mimes:jpeg,png,jpg|max:2048', // Validasi file gambar
-            'berkas_pendukung' => 'nullable|array', // Harus array
-            'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240', // Validasi isi array
-            'status_pengajuan' => 'required|in:pending,disetujui,ditolak',
-            'tanggal_persetujuan' => 'nullable|date',
-            'komentar_manajer' => 'nullable|string',
+            'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
+            'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
+            'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
+            'jam_mulai' => 'required_if:kategori,izin|nullable|date_format:H:i',
+            'jam_selesai' => 'required_if:kategori,izin|nullable|date_format:H:i',
+            'berkas_pendukung' => 'nullable|array',
+            'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240',
+            'geolocation' => 'required_if:kategori,izin|nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        // 2. Siapkan data teks (kecuali file)
-        $data = $request->except(['berkas_pendukung', 'tanda_tangan']);
+        $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
+            'durasi', 'keterangan', 'jenis_cuti', 
+            'tanggal_mulai', 'tanggal_selesai', 'jam_mulai', 'jam_selesai', 'geolocation']);
 
-        // 3. Proses Upload Tanda Tangan (Satu File)
-        if ($request->hasFile('tanda_tangan')) {
-            $data['tanda_tangan'] = $request->file('tanda_tangan')->store('uploads/ttd', 'public');
-        }
-
-        // 4. Proses Upload Berkas Pendukung (Multi File / Array)
         $pathBerkas = [];
         if ($request->hasFile('berkas_pendukung')) {
             foreach ($request->file('berkas_pendukung') as $file) {
-                $pathBerkas[] = $file->store('uploads/berkas_izin', 'public');
+                $pathBerkas[] = $file->store('uploads/berkas', 'public');
             }
         }
-        // Masukkan array path ke dalam data. Akan otomatis jadi JSON jika di Model ada $casts
-        $data['berkas_pendukung'] = !empty($pathBerkas) ? $pathBerkas : null;
 
-        // 5. Simpan ke Database
-        $pengajuan = PengajuanIzinCuti::create($data);
+        $pengajuan = PengajuanIzinCuti::create($data + [
+            'berkas_pendukung' => !empty($pathBerkas) ? $pathBerkas : null,
+        ]);
 
-        // 6. Kirim Notifikasi ke User Pengganti via OneSignal
-        if ($pengajuan->user_pengganti_id) {
-            $pengganti = User::find($pengajuan->user_pengganti_id);
-            if ($pengganti && $pengganti->onesignal_id) {
-                $pengaju = User::find($pengajuan->user_id);
-                $namaPengaju = $pengaju ? $pengaju->name : 'Seseorang';
-                
-                // Gunakan environment variable ONESIGNAL_REST_API_KEY dan ONESIGNAL_APP_ID
-                $apiKey = env('ONESIGNAL_REST_API_KEY', 'YOUR_REST_API_KEY');
-                $appId = env('ONESIGNAL_APP_ID', 'YOUR_APP_ID');
+        // Kirim Notifikasi OneSignal
+        $pengganti = User::find($request->user_pengganti_id);
+        $penggantiIds = ($pengganti && $pengganti->onesignal_id) ? [$pengganti->onesignal_id] : [];
 
-                Http::withHeaders([
-                    'Authorization' => 'Basic ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                ])->post('https://onesignal.com/api/v1/notifications', [
-                    'app_id' => $appId,
-                    'include_player_ids' => [$pengganti->onesignal_id],
-                    'contents' => [
-                        'en' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti.",
-                        'id' => "Ada pengajuan cuti dari {$namaPengaju} yang membutuhkan Anda sebagai pengganti."
-                    ],
-                    'headings' => [
-                        'en' => "Butuh Persetujuan Cuti",
-                        'id' => "Butuh Persetujuan Cuti"
-                    ]
-                ]);
-            }
+        $manajerIds = User::where('role', 'manajer')
+            ->whereNotNull('onesignal_id')
+            ->pluck('onesignal_id')
+            ->toArray();
+
+        $targetIds = array_unique(array_merge($penggantiIds, $manajerIds));
+
+        if (!empty($targetIds)) {
+            $namaPemohon = auth()->check() ? auth()->user()->name : 'Pegawai';
+            $pesan = "{$namaPemohon} mengajukan cuti/izin baru. Mohon segera dicek dan diproses.";
+
+            Http::withHeaders([
+                'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+                'Content-Type' => 'application/json',
+            ])->post('https://onesignal.com/api/v1/notifications', [
+                'app_id' => env('ONESIGNAL_APP_ID'),
+                'include_player_ids' => array_values($targetIds),
+                'contents' => [
+                    'en' => $pesan,
+                    'id' => $pesan
+                ],
+                'headings' => [
+                    'en' => "🔔 Pengajuan Cuti Baru",
+                    'id' => "🔔 Pengajuan Cuti Baru"
+                ],
+            ]);
         }
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data izin cuti berhasil ditambahkan',
-            'data'   => $pengajuan
+            'status'  => 'success',
+            'message' => 'Pengajuan berhasil dikirim!',
+            'data'    => $pengajuan
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(PengajuanIzinCuti $pengajuanIzinCuti)
     {
-        $pengajuan = PengajuanIzinCuti::with(['user','userPengganti'])->find($id);
-
-        if (!$pengajuan) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data izin cuti tidak ditemukan'
-            ], 404);
-        }
+        $pengajuanIzinCuti->load('user', 'userPengganti');
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Detail izin cuti berhasil dimuat',
-            'data'   => $pengajuan
+            'status'  => 'success',
+            'message' => 'Detail pengajuan berhasil diambil.',
+            'data'    => $pengajuanIzinCuti
         ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, PengajuanIzinCuti $pengajuanIzinCuti)
     {
-        $pengajuan = PengajuanIzinCuti::find($id);
-
-        if (!$pengajuan) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data izin cuti tidak ditemukan'
-            ], 404);
-        }
-
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'user_pengganti_id' => 'nullable|exists:users,id',
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
-            'durasi' => 'required|string',
+            'durasi' => 'nullable|string',
             'keterangan' => 'required|string',
-            'alamat_tempat' => 'required|string',
-            'jenis' => 'nullable|string',
-            'tanggal_mulai' => 'nullable|date',
-            'tanggal_selesai' => 'nullable|date',
-            'tanda_tangan' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'jenis_cuti' => 'nullable|in:cuti_tahunan,cuti_kehamilan,lainnya',
+            'tanggal_mulai' => 'required_if:kategori,cuti|nullable|date',
+            'tanggal_selesai' => 'required_if:kategori,cuti|nullable|date|after_or_equal:tanggal_mulai',
+            'jam_mulai' => 'required_if:kategori,izin|nullable|date_format:H:i',
+            'jam_selesai' => 'required_if:kategori,izin|nullable|date_format:H:i',
             'berkas_pendukung' => 'nullable|array',
             'berkas_pendukung.*' => 'file|mimes:jpeg,png,jpg,pdf,mp4|max:10240',
-            'status_pengajuan' => 'required|in:pending,disetujui,ditolak',
-            'tanggal_persetujuan' => 'nullable|date',
-            'komentar_manajer' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Validasi data gagal',
-                'errors' => $validator->errors()
+                'status'  => 'error',
+                'message' => 'Mohon periksa kembali form Anda.',
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $data = $request->except(['berkas_pendukung', 'tanda_tangan']);
+        $data = $request->only(['user_id', 'user_pengganti_id', 'kategori', 'tanggal_pengajuan', 
+            'durasi', 'keterangan', 'jenis_cuti', 
+            'tanggal_mulai', 'tanggal_selesai', 'jam_mulai', 'jam_selesai']);
 
-        // Update Tanda Tangan
-        if ($request->hasFile('tanda_tangan')) {
-            // Hapus ttd lama
-            if ($pengajuan->tanda_tangan) {
-                Storage::disk('public')->delete($pengajuan->tanda_tangan);
-            }
-            $data['tanda_tangan'] = $request->file('tanda_tangan')->store('uploads/ttd', 'public');
-        }
+        $data['status_pengajuan'] = 'pending';
 
-        // Update Berkas Pendukung (Timpa dengan file baru)
         if ($request->hasFile('berkas_pendukung')) {
-            // Hapus semua berkas lama di array
-            if (is_array($pengajuan->berkas_pendukung)) {
-                foreach ($pengajuan->berkas_pendukung as $oldFile) {
+            if (is_array($pengajuanIzinCuti->berkas_pendukung)) {
+                foreach ($pengajuanIzinCuti->berkas_pendukung as $oldFile) {
                     Storage::disk('public')->delete($oldFile);
                 }
             }
@@ -204,70 +181,156 @@ class PengajuanIzinCutiController
             $data['berkas_pendukung'] = $pathBerkas;
         }
 
-        $pengajuan->update($data);
+        $pengajuanIzinCuti->update($data);
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data izin cuti berhasil diperbarui',
-            'data'   => $pengajuan
+            'status'  => 'success',
+            'message' => 'Pengajuan berhasil diperbarui.',
+            'data'    => $pengajuanIzinCuti
         ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(PengajuanIzinCuti $pengajuanIzinCuti)
     {
-        $pengajuan = PengajuanIzinCuti::find($id);
-
-        if (!$pengajuan) {
-            return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data izin cuti tidak ditemukan'
-            ], 404);
+        if ($pengajuanIzinCuti->tanda_tangan) {
+            Storage::disk('public')->delete($pengajuanIzinCuti->tanda_tangan);
         }
 
-        // 1. Hapus file Tanda Tangan fisik
-        if ($pengajuan->tanda_tangan) {
-            Storage::disk('public')->delete($pengajuan->tanda_tangan);
-        }
-
-        // 2. Hapus file Berkas Pendukung fisik (karena bentuknya array, harus dilooping)
-        if (is_array($pengajuan->berkas_pendukung)) {
-            foreach ($pengajuan->berkas_pendukung as $file) {
+        if (is_array($pengajuanIzinCuti->berkas_pendukung)) {
+            foreach ($pengajuanIzinCuti->berkas_pendukung as $file) {
                 Storage::disk('public')->delete($file);
             }
         }
 
-        // 3. Hapus data dari MySQL
-        $pengajuan->delete();
+        $pengajuanIzinCuti->delete();
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Data dan file izin cuti berhasil dihapus secara permanen'
+            'status'  => 'success',
+            'message' => 'Pengajuan berhasil dihapus.'
+        ], 200);
+    }
+
+    public function persetujuanPengganti(Request $request, PengajuanIzinCuti $pengajuan)
+    {
+        if (auth()->id() !== $pengajuan->user_pengganti_id) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki akses.'
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'status_pengganti' => 'required|in:disetujui,ditolak'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Validasi gagal.',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        $pengajuan->update([
+            'status_pengganti' => $request->status_pengganti
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Anda telah merespons permintaan sebagai pengganti.',
+            'data'    => $pengajuan
         ], 200);
     }
 
     /**
-     * Setujui sebagai pengganti
+     * Memproses persetujuan atau penolakan oleh Manajer
      */
-    public function approvePengganti(string $id)
+    public function persetujuan(Request $request, PengajuanIzinCuti $pengajuan)
     {
-        $pengajuan = PengajuanIzinCuti::find($id);
+        $validator = Validator::make($request->all(), [
+            'status_pengajuan' => 'required|in:disetujui,ditolak',
+            'komentar_manajer' => 'nullable|string',
+        ]);
 
-        if (!$pengajuan) {
+        if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'pesan'  => 'Data izin cuti tidak ditemukan'
-            ], 404);
+                'status'  => 'error',
+                'message' => 'Gagal memproses persetujuan.',
+                'errors'  => $validator->errors()
+            ], 422);
         }
 
-        $pengajuan->update(['status_pengganti' => 'disetujui']);
+        $user = $pengajuan->user;
+
+        if ($request->status_pengajuan === 'disetujui') {
+            if ($pengajuan->user_pengganti_id && $pengajuan->status_pengganti !== 'disetujui') {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Persetujuan digagalkan! Pegawai pengganti belum menyetujui pengajuan ini.'
+                ], 400);
+            }
+        }
+
+        if ($pengajuan->status_pengganti === 'ditolak') {
+            $pengajuan->update([
+                'status_pengajuan' => 'ditolak',
+            ]);
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Persetujuan digagalkan! Pegawai pengganti tidak menyetujui pengajuan ini.'
+            ], 400);
+        }
+
+        // Potong / Kembalikan Jatah Cuti
+        if ($pengajuan->kategori === 'cuti' && $pengajuan->tanggal_mulai && $pengajuan->tanggal_selesai) {
+            $tglMulai = \Carbon\Carbon::parse($pengajuan->tanggal_mulai);
+            $tglSelesai = \Carbon\Carbon::parse($pengajuan->tanggal_selesai);
+            $jumlahHari = $tglMulai->diffInDays($tglSelesai) + 1;
+
+            if ($pengajuan->status_pengajuan !== 'disetujui' && $request->status_pengajuan === 'disetujui') {
+                if ($pengajuan->jenis_cuti === 'cuti_tahunan') {
+                    if ($user->jatah_cuti_tahunan < $jumlahHari) {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => 'Persetujuan digagalkan! Sisa cuti tahunan pegawai (' . $user->jatah_cuti_tahunan . ' hari) tidak mencukupi untuk pengajuan ini (' . $jumlahHari . ' hari).'
+                        ], 400);
+                    }
+                    $user->jatah_cuti_tahunan -= $jumlahHari;
+                    $user->save();
+                } elseif ($pengajuan->jenis_cuti === 'cuti_kehamilan') {
+                    if ($user->jatah_cuti_kehamilan < $jumlahHari) {
+                        return response()->json([
+                            'status'  => 'error',
+                            'message' => 'Persetujuan digagalkan! Sisa cuti kehamilan tidak mencukupi.'
+                        ], 400);
+                    }
+                    $user->jatah_cuti_kehamilan -= $jumlahHari;
+                    $user->save();
+                }
+            } elseif ($pengajuan->status_pengajuan === 'disetujui' && ($request->status_pengajuan === 'ditolak' || $request->status_pengajuan === 'pending')) {
+                if ($pengajuan->jenis_cuti === 'cuti_tahunan') {
+                    $user->jatah_cuti_tahunan += $jumlahHari;
+                    $user->save();
+                } elseif ($pengajuan->jenis_cuti === 'cuti_kehamilan') {
+                    $user->jatah_cuti_kehamilan += $jumlahHari;
+                    $user->save();
+                }
+            }
+        }
+
+        $pengajuan->update([
+            'status_pengajuan'    => $request->status_pengajuan,
+            'komentar_manajer'    => $request->komentar_manajer,
+            'tanggal_persetujuan' => now(),
+        ]);
 
         return response()->json([
-            'status' => 'success',
-            'pesan'  => 'Status pengganti berhasil disetujui',
-            'data'   => $pengajuan
+            'status'  => 'success',
+            'message' => 'Status pengajuan berhasil diperbarui menjadi: ' . ucfirst($request->status_pengajuan),
+            'data'    => $pengajuan
         ], 200);
     }
 }

@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 /**
  * Sheet tersembunyi yang menjadi sumber data validation (dropdown) pada
  * sheet "Jadwal Shift Karyawan". Formatnya meniru Sheet1 pada template asli:
- * "Day Off" lalu "{NamaShift} || {JamMasuk} - {JamKeluar} || {Toleransi}m"
+ * "Day Off" lalu "{NamaShift} || {JamMasuk} - {JamKeluar}"
  */
 class ShiftOptionsSheet implements FromCollection, WithTitle, WithEvents
 {
@@ -29,10 +29,9 @@ class ShiftOptionsSheet implements FromCollection, WithTitle, WithEvents
         foreach ($this->shifts as $shift) {
             $jamMasuk = $shift->jam_masuk ?? '-';
             $jamKeluar = $shift->jam_keluar ?? '-';
-            $toleransi = $shift->toleransi ?? 0;
 
             $rows->push([
-                sprintf('%s || %s - %s || %sm', $shift->nama_shift, $jamMasuk, $jamKeluar, $toleransi),
+                sprintf('%s || %s - %s', $shift->nama_shift, $jamMasuk, $jamKeluar),
             ]);
         }
 

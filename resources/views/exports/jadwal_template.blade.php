@@ -37,9 +37,9 @@
         <tr>
             <td></td>
             <th rowspan="2" style="background-color: #FFCC00; color: #333333; border: 1px solid #000000; text-align: center; vertical-align: middle;">No</th>
-            <th rowspan="2" style="background-color: #FFCC00; color: #3B3838; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">Personnel ID<br>ID Personalia</th>
+            <th rowspan="2" style="background-color: #FFCC00; color: #3B3838; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">Personnel ID<br>(Nomor KTP)</th>
             <th rowspan="2" style="background-color: #FFCC00; color: #3B3838; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">Name<br>Nama</th>
-            <th rowspan="2" style="background-color: #FFCC00; color: #3B3838; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">Personnel Group<br>Group Personalia</th>
+            <th rowspan="2" style="background-color: #FFCC00; color: #3B3838; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">Personnel Group<br>(Posisi/jabatan)</th>
             <th colspan="{{ count($dateColumns) }}" style="background-color: #FFC000; color: #4A452A; border: 1px solid #000000; text-align: center; vertical-align: middle; white-space: normal;">{{ $monthLabel }}</th>
         </tr>
         <tr>

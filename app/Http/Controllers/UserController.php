@@ -56,7 +56,7 @@ class UserController
             'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
-            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -126,7 +126,7 @@ class UserController
             'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
             'jatah_cuti_kehamilan' => 'required|integer',
-            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'Foto_Profil' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -184,5 +184,27 @@ class UserController
 
         // Gunakan view yang sudah ada!
         return view('details.pegawai', compact('user', 'shifts'));
+    }
+
+    //khusus pegawai update foto profil
+    public function updateProfilSaya(Request $request)
+    {
+        $user = auth()->user(); // Otomatis mengedit profil user yang sedang login
+
+        $request->validate([
+            'Foto_Profil' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        if ($request->hasFile('Foto_Profil')) {
+            if ($user->Foto_Profil && \Storage::disk('public')->exists($user->Foto_Profil)) {
+                \Storage::disk('public')->delete($user->Foto_Profil);
+            }
+
+            $path = $request->file('Foto_Profil')->store('foto_profil', 'public');
+            $user->Foto_Profil = $path;
+            $user->save();
+        }
+
+        return back()->with('success', 'Foto profil berhasil diperbarui.');
     }
 }
