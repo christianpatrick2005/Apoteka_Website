@@ -49,7 +49,7 @@ class PengajuanIzinCutiController
         // Validasi berkas berkas
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'user_pengganti_id' => 'nullable|exists:users,id', // Diubah jadi nullable jika tidak selalu ada
+            'user_pengganti_id' => 'required_if:kategori,cuti|nullable|exists:users,id', // Diwajibkan jika kategori adalah cuti
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
             'durasi' => 'nullable|string',
@@ -104,35 +104,51 @@ class PengajuanIzinCutiController
             ->pluck('onesignal_id')
             ->toArray();
 
-        // 4. Gabungkan ID Pengganti dan Manajer, lalu hapus duplikat (jika ada)
-        $targetIds = array_unique(array_merge($penggantiIds, $manajerIds));
+        // 4. Kirim notifikasi secara terpisah
+        $namaPemohon = auth()->user()->name;
+        $kategoriStr = strtolower($request->kategori); // "cuti" atau "izin"
 
-        // 5. Tembak API OneSignal jika ada minimal 1 penerima
-        if (!empty($targetIds)) {
-            $namaPemohon = auth()->user()->name;
-            $pesan = "{$namaPemohon} mengajukan cuti/izin baru. Mohon segera dicek dan diproses.";
-
+        // Notifikasi untuk Pegawai Pengganti (jika ada)
+        if (!empty($penggantiIds)) {
+            $pesanPengganti = "Ada permintaan penggantian " . $kategoriStr;
             Http::withHeaders([
                 'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
                 'Content-Type' => 'application/json',
             ])->post('https://onesignal.com/api/v1/notifications', [
                 'app_id' => env('ONESIGNAL_APP_ID'),
-                'include_player_ids' => array_values($targetIds),
+                'include_player_ids' => array_values($penggantiIds),
                 'contents' => [
-                    'en' => $pesan,
-                    'id' => $pesan
+                    'en' => $pesanPengganti,
+                    'id' => $pesanPengganti
                 ],
                 'headings' => [
-                    'en' => "🔔 Pengajuan Cuti Baru",
-                    'id' => "🔔 Pengajuan Cuti Baru"
+                    'en' => "🔔 Permintaan Pengganti",
+                    'id' => "🔔 Permintaan Pengganti"
                 ],
-                // Opsional: Jika mau pakai logo
-                // 'chrome_web_icon' => asset('images/Logo Apoteka - Bahagia Medifarma5.png') 
             ]);
         }
-        
 
-        return back()->with('success', 'Pengajuan berhasil dikirim!');
+        // Notifikasi untuk Manajer
+        if (!empty($manajerIds)) {
+            $pesanManajer = "Ada pengajuan " . $kategoriStr . " baru, mohon segera dicek";
+            Http::withHeaders([
+                'Authorization' => 'Basic ' . env('ONESIGNAL_REST_API_KEY'),
+                'Content-Type' => 'application/json',
+            ])->post('https://onesignal.com/api/v1/notifications', [
+                'app_id' => env('ONESIGNAL_APP_ID'),
+                'include_player_ids' => array_values($manajerIds),
+                'contents' => [
+                    'en' => $pesanManajer,
+                    'id' => $pesanManajer
+                ],
+                'headings' => [
+                    'en' => "🔔 Pengajuan Baru",
+                    'id' => "🔔 Pengajuan Baru"
+                ],
+            ]);
+        }
+
+        return back()->with('success', 'Pengajuan ' . $kategoriStr . ' anda berhasil dikirim');
     }
 
     /**
@@ -149,6 +165,10 @@ class PengajuanIzinCutiController
      */
     public function edit(PengajuanIzinCuti $pengajuanIzinCuti)
     {
+        if ($pengajuanIzinCuti->status_pengajuan === 'disetujui') {
+            return back()->with('error', 'Pengajuan yang sudah disetujui tidak dapat diedit.');
+        }
+        
         return view('forms.FormIzinCuti', compact('pengajuanIzinCuti'));
     }
 
@@ -157,6 +177,10 @@ class PengajuanIzinCutiController
      */
     public function update(Request $request, PengajuanIzinCuti $pengajuanIzinCuti)
     {
+        if ($pengajuanIzinCuti->status_pengajuan === 'disetujui') {
+            return back()->with('error', 'Pengajuan yang sudah disetujui tidak dapat diedit.');
+        }
+
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'user_pengganti_id' => 'nullable|exists:users,id',
@@ -247,9 +271,15 @@ class PengajuanIzinCutiController
             'status_pengganti' => 'required|in:disetujui,ditolak'
         ]);
 
-        $pengajuan->update([
+        $dataUpdate = [
             'status_pengganti' => $request->status_pengganti
-        ]);
+        ];
+
+        if ($request->status_pengganti === 'ditolak') {
+            $dataUpdate['status_pengajuan'] = 'ditolak';
+        }
+
+        $pengajuan->update($dataUpdate);
 
         return back()->with('success', 'Anda telah merespons permintaan sebagai pengganti.');
     }
