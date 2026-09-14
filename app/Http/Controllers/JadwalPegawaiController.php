@@ -53,7 +53,10 @@ class JadwalPegawaiController
             return back()->withErrors($validator)->withInput()->with('error', 'Mohon periksa kembali form Anda.');
         }
 
-        JadwalPegawai::create($request->only(['user_id','shift_id','tanggal']));
+        JadwalPegawai::updateOrCreate(
+            ['user_id' => $request->user_id, 'tanggal' => $request->tanggal],
+            ['shift_id' => $request->shift_id]
+        );
 
         return back()->with('success', 'Jadwal berhasil ditambahkan');
     }
@@ -91,6 +94,15 @@ class JadwalPegawaiController
             return back()->withErrors($validator)->withInput()->with('error', 'Mohon periksa kembali form Anda.');
         }
 
+        $existing = JadwalPegawai::where('user_id', $request->input('user_id', $jadwalPegawai->user_id))
+            ->where('tanggal', $request->input('tanggal', $jadwalPegawai->tanggal))
+            ->where('id', '!=', $jadwalPegawai->id)
+            ->first();
+
+        if ($existing) {
+            return back()->withInput()->with('error', 'Gagal: Jadwal untuk pegawai dan tanggal tersebut sudah ada.');
+        }
+
         $jadwalPegawai->update($request->only(['user_id','shift_id','tanggal']));
 
         return back()->with('success', 'Data jadwal berhasil diperbarui');
@@ -124,11 +136,11 @@ class JadwalPegawaiController
 
         $start = $request->query('start')
             ? Carbon::parse($request->query('start'))->startOfDay()
-            : now()->startOfMonth();
+            : now()->setDay(15)->startOfDay();
 
         $end = $request->query('end')
             ? Carbon::parse($request->query('end'))->startOfDay()
-            : $start->copy()->endOfMonth();
+            : $start->copy()->addMonthsNoOverflow(1)->subDay();
 
         $filename = sprintf(
             'Template_Upload_Jadwal_Shift_%s_-_%s.xlsx',

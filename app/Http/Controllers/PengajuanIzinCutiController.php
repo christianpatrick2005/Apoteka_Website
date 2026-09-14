@@ -221,7 +221,7 @@ class PengajuanIzinCutiController
 
             $pathBerkas = [];
             foreach ($request->file('berkas_pendukung') as $file) {
-                $pathBerkas[] = $file->store('uploads/berkas_izin', 'public');
+                $pathBerkas[] = $file->store('uploads/berkas', 'public');
             }
             $data['berkas_pendukung'] = $pathBerkas;
         }
@@ -309,12 +309,7 @@ class PengajuanIzinCutiController
             }
         }
 
-        if ($pengajuan->status_pengganti === 'ditolak') {
-            $pengajuan->update([
-                'status_pengajuan' => 'ditolak',
-            ]);
-            return back()->with('error', 'Persetujuan digagalkan! Pegawai pengganti tidak menyetujui pengajuan ini.');
-        }
+
 
         // logika POTONG JATAH CUTI & KEMBALIKAN JATAH CUTI
         if ($pengajuan->kategori === 'cuti' && $pengajuan->tanggal_mulai && $pengajuan->tanggal_selesai) {

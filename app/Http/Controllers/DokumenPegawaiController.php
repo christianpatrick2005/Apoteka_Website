@@ -62,8 +62,11 @@ class DokumenPegawaiController
             }
         }
 
-        // 4. Simpan ke database
-        DokumenPegawai::create($data);
+        // 4. Simpan ke database (Gunakan updateOrCreate untuk mencegah dokumen ganda)
+        DokumenPegawai::updateOrCreate(
+            ['user_id' => $data['user_id']],
+            $data
+        );
 
         return back()->with('success', 'Dokumen pegawai berhasil ditambahkan');
     }
