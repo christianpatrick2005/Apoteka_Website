@@ -216,11 +216,11 @@
     <div class="py-6 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Media Sosial</h2>
-            <p class="mt-4 text-lg text-slate-500">Berikut adalah postingan terbaru dari Instagram kami</p>
+            <p class="mt-4 text-lg text-slate-500 mb-4">Berikut adalah postingan terbaru dari Instagram kami</p>
 
             <!-- Widget Elfsight -->
-            <div class="elfsight-app-91865fb5-c91b-483e-a5a5-34b15862ada7" data-elfsight-app-lazy></div>
-
+            <!-- <div class="elfsight-app-91865fb5-c91b-483e-a5a5-34b15862ada7" data-elfsight-app-lazy></div> -->
+            <div class="elfsight-app-5c0cc7f5-d140-408c-aef6-1aa7f15690c7" data-elfsight-app-lazy></div>
         </div>
     </div>
 

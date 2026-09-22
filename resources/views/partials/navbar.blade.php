@@ -4,7 +4,7 @@
   window.OneSignalDeferred = window.OneSignalDeferred || [];
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
-      appId: "8bc767f9-69d0-4ea5-9009-b69d87e999d7", 
+      appId: "b51c1b22-b3fd-4ebd-b061-831d35ada89a", 
       notifyButton: {
         enable: true, // Memunculkan tombol lonceng untuk berlangganan notifikasi
       },
