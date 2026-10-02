@@ -63,9 +63,10 @@
                             @method('PUT')
                         @endif
 
-                        <!-- Left Column -->
-                        <div class="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Left Column -->
+                            <div class="space-y-4">
+                                <div>
                                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
                                 <input type="text" name="name" value="{{ old('name', $user->name ?? '') }}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
@@ -156,6 +157,7 @@
                                 <label class="block text-sm font-medium text-gray-700">Foto Profil</label>
                                 <input type="file" name="Foto_Profil" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#284fa0] focus:border-[#284fa0] sm:text-sm">
                             </div>
+                        </div>
                         </div>
                     </form>
                 </div>
