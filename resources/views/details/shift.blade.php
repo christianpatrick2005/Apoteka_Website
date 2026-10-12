@@ -44,11 +44,11 @@
                         </div>
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Jam Masuk</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $shift->jam_masuk }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($shift->jam_masuk)->format('H:i') }} WIB</dd>
                         </div>
                         <div class="sm:col-span-1">
                             <dt class="text-sm font-medium text-gray-500">Jam Keluar</dt>
-                            <dd class="mt-1 text-sm text-gray-900">{{ $shift->jam_keluar }}</dd>
+                            <dd class="mt-1 text-sm text-gray-900">{{ \Carbon\Carbon::parse($shift->jam_keluar)->format('H:i') }} WIB</dd>
                         </div>
                     </dl>
                 </div>

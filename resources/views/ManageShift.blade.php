@@ -29,6 +29,37 @@
 
             @include('partials.navigation')
 
+            <!-- Menampilkan Pesan Sukses / Error -->
+            @if(session('success'))
+            <div class="mt-6 mb-4 bg-green-50 border-l-4 border-green-400 p-4 rounded-md shadow-sm transition-all">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mt-6 mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md shadow-sm transition-all">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- CONTENT: SHIFT -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
@@ -54,15 +85,15 @@
                             @forelse($data as $shift)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$shift->nama_shift}}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$shift->jam_masuk}}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$shift->jam_keluar}}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($shift->jam_masuk)->format('H:i') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ \Carbon\Carbon::parse($shift->jam_keluar)->format('H:i') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('shift.show', $shift->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Detail</a>
                                     <!-- Tombol Edit (Menggunakan tag <a> ke route edit) -->
                                     <a href="{{ route('shift.edit', $shift->id) }}" class="text-[#284fa0] hover:text-[#1e3b7a] mr-3">Edit</a>
                                     
                                     <!-- Tombol Hapus (Wajib menggunakan tag <form> dengan metode DELETE) -->
-                                    <form action="{{ route('shift.destroy', $shift->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?');">
+                                    <form action="{{ route('shift.destroy', $shift->id) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus shift ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-[#eb2128] hover:text-red-900">Hapus</button>

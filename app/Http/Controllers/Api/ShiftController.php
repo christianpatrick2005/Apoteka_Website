@@ -29,8 +29,8 @@ class ShiftController
     {
         $validator = Validator::make($request->all(), [
             'nama_shift' => 'required|string|max:255',
-            'jam_masuk'  => 'required|date_format:H:i',
-            'jam_keluar' => 'required|date_format:H:i',
+            'jam_masuk'  => 'required|date_format:H:i,H:i:s',
+            'jam_keluar' => 'required|date_format:H:i,H:i:s',
         ]);
 
         if ($validator->fails()) {
@@ -71,8 +71,8 @@ class ShiftController
     {
         $validator = Validator::make($request->all(), [
             'nama_shift' => 'required|string|max:255',
-            'jam_masuk'  => 'required|date_format:H:i',
-            'jam_keluar' => 'required|date_format:H:i',
+            'jam_masuk'  => 'required|date_format:H:i,H:i:s',
+            'jam_keluar' => 'required|date_format:H:i,H:i:s',
         ]);
 
         if ($validator->fails()) {

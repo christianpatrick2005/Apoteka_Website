@@ -29,6 +29,37 @@
 
             @include('partials.navigation')
 
+            <!-- Menampilkan Pesan Sukses / Error -->
+            @if(session('success'))
+            <div class="mt-6 mb-4 bg-green-50 border-l-4 border-green-400 p-4 rounded-md shadow-sm transition-all">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if(session('error'))
+            <div class="mt-6 mb-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-md shadow-sm transition-all">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- CONTENT: DOKUMEN PEGAWAI -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">

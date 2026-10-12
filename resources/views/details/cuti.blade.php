@@ -87,28 +87,30 @@
                         </div>
 
                         <!-- Bagian Menampilkan Peta -->
-                        @if($pengajuanIzinCuti->geolocation)
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500 mb-2">Lokasi GPS Pegawai Saat Mengajukan</dt>
-                            <dd class="mt-1">
-                                <!-- Koordinat asli (disembunyikan untuk dibaca oleh Javascript nanti) -->
-                                <span id="koordinat-gps" class="hidden">{{ $pengajuanIzinCuti->geolocation }}</span>
-                                
-                                <!-- Kotak tempat peta akan dirender -->
-                                <div id="map" class="w-full h-64 rounded-lg border border-gray-300 shadow-sm z-0"></div>
-                                
-                                <a href="https://www.google.com/maps?q={{ str_replace(' ', '', $pengajuanIzinCuti->geolocation) }}" 
-                                target="_blank" 
-                                class="inline-block mt-2 text-xs font-medium text-[#284fa0] hover:text-[#1e3b7a] underline">
-                                Buka di Google Maps ↗
-                                </a>
-                            </dd>
-                        </div>
-                        @else
-                        <div class="sm:col-span-1">
-                            <dt class="text-sm font-medium text-gray-500">Lokasi GPS Pegawai Saat Mengajukan</dt>
-                            <dd class="mt-1 text-sm text-gray-500 italic">Lokasi GPS tidak direkam / tidak tersedia.</dd>
-                        </div>
+                        @if($pengajuanIzinCuti->kategori == 'izin')
+                            @if($pengajuanIzinCuti->geolocation)
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500 mb-2">Lokasi GPS Pegawai Saat Mengajukan</dt>
+                                <dd class="mt-1">
+                                    <!-- Koordinat asli (disembunyikan untuk dibaca oleh Javascript nanti) -->
+                                    <span id="koordinat-gps" class="hidden">{{ $pengajuanIzinCuti->geolocation }}</span>
+                                    
+                                    <!-- Kotak tempat peta akan dirender -->
+                                    <div id="map" class="w-full h-64 rounded-lg border border-gray-300 shadow-sm z-0"></div>
+                                    
+                                    <a href="https://www.google.com/maps?q={{ str_replace(' ', '', $pengajuanIzinCuti->geolocation) }}" 
+                                    target="_blank" 
+                                    class="inline-block mt-2 text-xs font-medium text-[#284fa0] hover:text-[#1e3b7a] underline">
+                                    Buka di Google Maps ↗
+                                    </a>
+                                </dd>
+                            </div>
+                            @else
+                            <div class="sm:col-span-1">
+                                <dt class="text-sm font-medium text-gray-500">Lokasi GPS Pegawai Saat Mengajukan</dt>
+                                <dd class="mt-1 text-sm text-gray-500 italic">Lokasi GPS tidak direkam / tidak tersedia.</dd>
+                            </div>
+                            @endif
                         @endif
 
                         <div class="sm:col-span-2">

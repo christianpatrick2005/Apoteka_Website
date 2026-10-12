@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class UserController
 {
@@ -43,7 +44,7 @@ class UserController
             'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
             'posisi'               => 'required|string|max:255',
             'gaji'                 => 'required|numeric',
-            'nomor_ktp'            => 'required|string|numeric|digits:16',
+            'nomor_ktp'            => 'required|string|numeric|digits:16|unique:users,nomor_ktp',
             'kewarganegaraan'       => 'required|string|max:255',
             'role'                 => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan'   => 'required|integer',
@@ -95,9 +96,19 @@ class UserController
      */
     public function update(Request $request, User $user)
     {
+        $emailRules = ['required', 'email'];
+        if ($request->email !== $user->email) {
+            $emailRules[] = Rule::unique('users', 'email')->ignore($user->id);
+        }
+
+        $ktpRules = ['required', 'string', 'numeric', 'digits:16'];
+        if ($request->nomor_ktp !== $user->nomor_ktp) {
+            $ktpRules[] = Rule::unique('users', 'nomor_ktp')->ignore($user->id);
+        }
+
         $validator = Validator::make($request->all(), [
             'name'                 => 'required|string|max:255',
-            'email'                => 'required|email|unique:users,email,' . $user->id,
+            'email'                => $emailRules,
             'password'             => 'nullable',
             'alamat_surabaya'      => 'required|string|max:255',
             'alamat_asal'          => 'required|string|max:255',
@@ -109,7 +120,7 @@ class UserController
             'jenis_kelamin'        => 'required|in:Laki-laki,Perempuan',
             'posisi'               => 'required|string|max:255',
             'gaji'                 => 'required|numeric',
-            'nomor_ktp'            => 'required|string|numeric|digits:16',
+            'nomor_ktp'            => $ktpRules,
             'kewarganegaraan'       => 'required|string|max:255',
             'role'                 => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan'   => 'required|integer',

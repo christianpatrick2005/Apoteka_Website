@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Shift;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class UserController
 {
@@ -106,10 +107,21 @@ class UserController
      */
     public function update(Request $request, User $user)
     {
+        // Aturan validasi unik hanya diterapkan jika field diubah dari data user saat ini
+        $emailRules = ['required', 'email'];
+        if ($request->email !== $user->email) {
+            $emailRules[] = Rule::unique('users', 'email')->ignore($user->id);
+        }
+
+        $ktpRules = ['required', 'string', 'numeric', 'digits:16'];
+        if ($request->nomor_ktp !== $user->nomor_ktp) {
+            $ktpRules[] = Rule::unique('users', 'nomor_ktp')->ignore($user->id);
+        }
+
         // 1. Validasi input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id, // Cuma boleh unique kalau bukan data dia sendiri
+            'email' => $emailRules,
             'password' => 'nullable',
             'alamat_surabaya' => 'required|string|max:255',
             'alamat_asal' => 'required|string|max:255',
@@ -121,7 +133,7 @@ class UserController
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
             'posisi' => 'required|string|max:255',
             'gaji' => 'required|numeric',
-            'nomor_ktp' => 'required|string|numeric|digits:16|unique:users,nomor_ktp,' . $user->id,
+            'nomor_ktp' => $ktpRules,
             'kewarganegaraan' => 'required|string|max:255',
             'role' => 'required|in:manajer,pegawai',
             'jatah_cuti_tahunan' => 'required|integer',
@@ -168,7 +180,7 @@ class UserController
         }
 
         $user->delete();
-        return back()->with('success', 'Data berhasil dihapus');
+        return back()->with('success', 'Data pegawai berhasil dihapus.');
     }
 
     public function profilSaya()
