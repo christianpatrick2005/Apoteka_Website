@@ -236,6 +236,16 @@ class PengajuanIzinCutiController
      */
     public function destroy(PengajuanIzinCuti $pengajuanIzinCuti)
     {
+        // Validasi: Hanya pengajuan yang belum disetujui manajer yang dapat dihapus
+        if ($pengajuanIzinCuti->status_pengajuan === 'disetujui') {
+            return back()->with('error', 'Pengajuan yang sudah disetujui oleh manajer tidak dapat dihapus.');
+        }
+
+        // Validasi otorisasi: Pegawai hanya dapat menghapus pengajuannya sendiri, manajer dapat menghapus pengajuan yang belum disetujui
+        if (auth()->check() && auth()->user()->role !== 'manajer' && auth()->id() !== $pengajuanIzinCuti->user_id) {
+            return abort(403, 'Anda tidak memiliki hak akses untuk menghapus pengajuan ini.');
+        }
+
         if ($pengajuanIzinCuti->tanda_tangan) {
             Storage::disk('public')->delete($pengajuanIzinCuti->tanda_tangan);
         }
@@ -248,7 +258,7 @@ class PengajuanIzinCutiController
 
         $pengajuanIzinCuti->delete();
 
-        return back()->with('success', 'Pengajuan berhasil dihapus');
+        return redirect()->route('pengajuan-izin.index')->with('success', 'Pengajuan berhasil dihapus');
     }
 
     /**

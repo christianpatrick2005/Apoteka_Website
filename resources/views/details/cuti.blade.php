@@ -31,10 +31,10 @@
                     <h1 class="text-3xl font-extrabold text-slate-900">Detail Pengajuan Izin/Cuti</h1>
                     <p class="mt-2 text-sm text-slate-500">Informasi pengajuan dan status persetujuan.</p>
                 </div>
-                <a href="{{ route('pengajuan-izin.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors">
-                    Kembali
-                </a>
-            </div>
+                    <a href="{{ route('pengajuan-izin.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors">
+                        Kembali
+                    </a>
+                </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-6">
                 <div class="px-6 py-5 border-b border-gray-200 bg-gray-50/50 flex justify-between items-center">
