@@ -183,7 +183,7 @@ class PengajuanIzinCutiController
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
-            'user_pengganti_id' => 'nullable|exists:users,id',
+            'user_pengganti_id' => 'required_if:kategori,cuti|exists:users,id',
             'kategori' => 'required|in:izin,cuti',
             'tanggal_pengajuan' => 'required|date',
             'durasi' => 'nullable|string',
